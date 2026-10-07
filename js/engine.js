@@ -55,6 +55,8 @@
       if (key === 'water') { s.energy = Math.min(100, s.energy + 15); s.message = '咕嘟咕嘟，补水成功'; }
       else if (key === 'protein') { s.energy = Math.min(100, s.energy + 12); s.message = '蛋白补给完成'; }
       else { s.energy = 100; s.message = '呼噜……恢复满格'; }
+      // 补给随时可用；若正好是教练指引，则推进到下一个动作。
+      if (key === expected(s)) { s.step++; if (s.step >= 42) { s.phase = 'maintain'; s.message = '薄肌达成！10 秒内可以喝水或睡觉'; } }
       return true;
     }
     const interval = s.elapsed - s.lastTap;
