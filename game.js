@@ -23,7 +23,7 @@
   function button(id,label,x,y,w,h,color) { box(x,y,w,h,color||green,16);text(label,x+w/2,y+h/2,17,color===lime?ink:'#fff','center');buttons.push({id,x,y,w,h}); }
   function body(cx,cy,kind,progress,focus,small) {
     c.save(); c.translate(cx,cy); c.scale(small ? 0.34 : 1, small ? 0.34 : 1);
-    const skin='#efb58f'; const broad=kind==='fat'?51-progress*16:26+progress*9;
+    const skin='#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
     c.translate(0,bounce);
     line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
@@ -52,18 +52,18 @@
       button('thin','瘦瘦开局',203,top+428,147,48,selected==='thin'?green:'#809482');
       text('① 跟着提示点胸、腿、手臂、腹部',30,top+502,14);
       text('② 点击立即响应，跟着指引均衡训练',30,top+530,14);
-      text('③ 完成 6 组，保持 10 秒，走向约会',30,top+558,14);
-      text('点错立即失败；连续猛点会变成厚肌',30,top+586,13,'#92714f');
+      text('③ 60秒结束时70～80分，解锁迎娶',30,top+558,14);
+      text('正确+4，错误-10，每秒-0.35；负分失败',30,top+586,13,'#92714f');
       button('start','开始 30 天挑战  →',24,top+613,342,56,green);
       text('成功记录 '+best+' 次  ·  夸张玩法，不是健身指导',195,top+686,11,'#718375','center');return;
     }
-    const s=state, progress=Math.min(s.step/42,1), exp=E.expected(s), training=s.phase==='training';
+    const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training';
     box(24,top+48,342,58,'#e7eddf',16);
     text(training?'DAY '+Math.min(30,Math.floor(s.elapsed/2)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
     text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':s.phase==='walk'?'步数 '+s.walk+'/6':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*progress),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='walk'?'点击脚印，稳稳走向她':'',195,top+134,21,green,'center');
-    body(s.phase==='walk'?85+s.walk*17:190,top+227,s.body,progress,training?exp:null,false);
+    body(s.phase==='walk'?85+s.walk*17:190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
     if(s.phase==='walk'||s.phase==='won') {
       body(286,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
       text('♥',286,top+162,24,'#c46b77','center');
@@ -79,7 +79,7 @@
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center');
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
-    text('薄肌进度 '+Math.round(s.progress)+'  · 体力 '+s.energy,350,top+445,12,'#758875','right');
+    text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
     const ms=['chest','arms','core','legs'];ms.forEach((m,i)=>{text(E.names[m],24+i*88,top+482,12);box(24+i*88,top+497,76,5,'#d5dfcc',2);box(24+i*88,top+497,Math.max(1,76*s.muscles[m]/6),5,green,2);});
     if(s.phase==='walk') button('walk','脚印  →  向前一步',24,top+525,342,57,green);
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
