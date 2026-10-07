@@ -97,8 +97,6 @@
   }
   function tap(x,y) {
     if(paused)return;
-    // 底部操作区避开模拟器安全区坐标偏移，左右两半分别对应重开和返回。
-    if (state && y >= 600) { if (x < W / 2) { state = E.create(selected); } else { state = null; } draw(); return; }
     const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
     else if(hit.id==='home')state=null;
