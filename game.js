@@ -97,7 +97,7 @@
   }
   function tap(x,y) {
     if(paused)return;
-    const hit=buttons.slice().reverse().find(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);if(!hit)return;
+    const hit=buttons.slice().reverse().find(b=>x>=b.x-12&&x<=b.x+b.w+12&&y>=b.y-12&&y<=b.y+b.h+12);if(!hit)return;
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
     else if(hit.id==='home')state=null;
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
@@ -105,7 +105,7 @@
     draw();
   }
   if(native) {
-    tt.onTouchStart(function(e){const t=e.touches[0];if(t)tap(t.clientX/scale,t.clientY/scale);});
+    tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const x=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const y=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(x!=null&&y!=null)tap(x/scale,y/scale);});
     tt.onHide(function(){paused=true;});tt.onShow(function(){paused=false;last=0;});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();tap((e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height);});
