@@ -41,7 +41,6 @@
     if (!['training', 'maintain', 'walk'].includes(s.phase)) return false;
     if (s.phase === 'walk') {
       if (key !== 'walk') return false;
-      if (s.elapsed - s.lastTap < 0.35) { s.message = '慢一点，稳稳走过去'; return false; }
       s.lastTap = s.elapsed; s.walk++;
       if (s.walk >= 6) { s.phase = 'won'; s.message = '牵手成功！自律，也要懂得休息'; }
       return true;
