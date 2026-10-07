@@ -97,7 +97,9 @@
   }
   function tap(x,y) {
     if(paused)return;
-    const hit=buttons.slice().reverse().find(b=>x>=b.x-12&&x<=b.x+b.w+12&&y>=b.y-12&&y<=b.y+b.h+12);if(!hit)return;
+    // 模拟器有时返回物理坐标；首页底部开始区使用宽松兜底，保证一触即进。
+    if (!state && y >= 560) { state = E.create(selected); draw(); return; }
+    const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
     else if(hit.id==='home')state=null;
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
