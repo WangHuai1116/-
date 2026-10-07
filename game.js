@@ -97,6 +97,14 @@
   }
   function tap(x,y) {
     if(paused)return;
+    // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
+    if (state && state.phase === 'training') {
+      const k=E.expected(state);
+      if (['chest','arms','core','legs'].includes(k) && y>=170 && y<540) { E.action(state,k); draw(); return; }
+      if (['water','protein','sleep'].includes(k) && y>=500 && y<680) {
+        const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
+      }
+    }
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
