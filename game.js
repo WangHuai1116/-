@@ -97,12 +97,14 @@
   }
   function tap(x,y) {
     if(paused)return;
+    // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
+    if (state && y>=610) { if (x < W/2) state=E.create(selected); else if (state.phase!=='training') state=null; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
       const k=E.expected(state);
       if (['chest','arms','core','legs'].includes(k) && y>=170 && y<540) { E.action(state,k); draw(); return; }
-      if (k==='sleep' && x>=W*0.58 && y>=450 && y<700) { E.action(state,'sleep'); draw(); return; }
-      if (['water','protein','sleep'].includes(k) && y>=470 && y<700) {
+      if (k==='sleep' && x>=W*0.58 && y>=450 && y<600) { E.action(state,'sleep'); draw(); return; }
+      if (['water','protein','sleep'].includes(k) && y>=470 && y<600) {
         const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
       }
     }
