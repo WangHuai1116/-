@@ -27,6 +27,20 @@
     if (!['training', 'maintain', 'walk'].includes(s.phase)) return false;
     if (s.phase === 'walk') {
       if (key !== 'walk') return false;
+      s.lastTap = s.elapsed; s.walk++;
+      if (s.walk >= 6) { s.phase = 'won'; s.message = '牵手成功！自律，也要懂得休息'; }
+      return true;
+    }
+    if (s.phase === 'maintain') {
+      s.maintain += dt;
+      if (s.maintain >= 10) { s.phase = 'walk'; s.message = '薄肌保持成功！点击脚印，走向她'; s.lastTap = -99; }
+    }
+    if (s.phase === 'walk' && s.elapsed >= 90) fail(s, '错过了见面时间，再练一次吧');
+  }
+  function action(s, key) {
+    if (!['training', 'maintain', 'walk'].includes(s.phase)) return false;
+    if (s.phase === 'walk') {
+      if (key !== 'walk') return false;
       if (s.elapsed - s.lastTap < 0.35) { s.message = '慢一点，稳稳走过去'; return false; }
       s.lastTap = s.elapsed; s.walk++;
       if (s.walk >= 6) { s.phase = 'won'; s.message = '牵手成功！自律，也要懂得休息'; }
@@ -37,12 +51,7 @@
       s.lastTap = s.elapsed; s.message = '保持住，放松呼吸'; return true;
     }
     const interval = s.elapsed - s.lastTap;
-    if (interval < 0.45) {
-      s.rapid++; s.heat = Math.min(100, s.heat + 40); s.lastTap = s.elapsed;
-      s.message = '太快了！等节奏圈变绿再点';
-      if (s.rapid >= 3 || s.heat >= 100) fail(s, '连续猛点，练成厚肌，挑战失败！');
-      return false;
-    }
+    if (interval < 0.08) { s.heat = Math.min(100, s.heat + 5); s.message = '动作很快，注意均衡'; }
     s.lastTap = s.elapsed;
     if (key !== expected(s)) { fail(s, '教练让你' + names[expected(s)] + '，你点错了！'); return false; }
     s.rapid = 0; s.events++;
