@@ -49,6 +49,14 @@
       if (key !== 'water' && key !== 'sleep') { fail(s, '维持期还在猛练，变成厚肌了！'); return false; }
       s.lastTap = s.elapsed; s.message = '保持住，放松呼吸'; return true;
     }
+    // 补给按钮随时可用，不会打断当前身体部位训练。
+    if (key === 'water' || key === 'protein' || key === 'sleep') {
+      s.lastTap = s.elapsed;
+      if (key === 'water') { s.energy = Math.min(100, s.energy + 15); s.message = '咕嘟咕嘟，补水成功'; }
+      else if (key === 'protein') { s.energy = Math.min(100, s.energy + 12); s.message = '蛋白补给完成'; }
+      else { s.energy = 100; s.message = '呼噜……恢复满格'; }
+      return true;
+    }
     const interval = s.elapsed - s.lastTap;
     if (interval < 0.08) { s.heat = Math.min(100, s.heat + 5); s.message = '动作很快，注意均衡'; }
     s.lastTap = s.elapsed;

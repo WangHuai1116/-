@@ -82,7 +82,7 @@
     text('体力 '+s.energy+'  /  过练 '+Math.round(s.heat),350,top+445,12,'#758875','right');
     const ms=['chest','arms','core','legs'];ms.forEach((m,i)=>{text(E.names[m],24+i*88,top+482,12);box(24+i*88,top+497,76,5,'#d5dfcc',2);box(24+i*88,top+497,Math.max(1,76*s.muscles[m]/6),5,green,2);});
     if(s.phase==='walk') button('walk','脚印  →  向前一步',24,top+525,342,57,green);
-    else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,training&&id===exp?green:'#809482'));
+    else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
     text(s.message,195,top+606,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
     if(['failed','won'].includes(s.phase)) {
