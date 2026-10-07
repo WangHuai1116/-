@@ -101,7 +101,8 @@
     if (state && state.phase === 'training') {
       const k=E.expected(state);
       if (['chest','arms','core','legs'].includes(k) && y>=170 && y<540) { E.action(state,k); draw(); return; }
-      if (['water','protein','sleep'].includes(k) && y>=500 && y<680) {
+      if (k==='sleep' && x>=W*0.58 && y>=450 && y<700) { E.action(state,'sleep'); draw(); return; }
+      if (['water','protein','sleep'].includes(k) && y>=470 && y<700) {
         const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
       }
     }
