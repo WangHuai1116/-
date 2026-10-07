@@ -13,7 +13,7 @@
   const c = canvas.getContext('2d'); c.scale(canvas.width / W, canvas.height / H);
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
-  let state = null, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
+  let state = null, confirmHome = false, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
   function box(x,y,w,h,color,r) { c.fillStyle=color; c.beginPath(); const radius=Math.min(r || 16,w/2,h/2); c.moveTo(x+radius,y); c.arcTo(x+w,y,x+w,y+h,radius); c.arcTo(x+w,y+h,x,y+h,radius); c.arcTo(x,y+h,x,y,radius); c.arcTo(x,y,x+w,y,radius); c.fill(); }
@@ -93,12 +93,14 @@
       text(msg.slice(0,19),195,top+285,15,'#fff','center');text(msg.slice(19),195,top+312,15,'#fff','center');
       button('restart','再挑战一次',50,top+356,290,54,lime);
     }
+    if(confirmHome) { box(0,0,W,H,'#19362bcc',0);box(35,285,320,210,'#fff',24);text('确定返回选择？',195,330,24,ink,'center');text('当前训练进度会丢失',195,365,14,'#718375','center');button('cancelHome','继续训练',55,405,130,48,'#809482');button('confirmHome','确认返回',205,405,130,48,green); }
     if(paused) { box(0,0,W,H,'#19362b',0);text('已暂停',195,340,30,lime,'center');text('回到游戏后继续',195,389,17,'#fff','center'); }
   }
   function tap(x,y) {
     if(paused)return;
     // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
-    if (state && y>=700) { if (x < W/2) state=E.create(selected); else if (state.phase!=='training') state=null; draw(); return; }
+    if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
+    if (state && y>=700) { if (x < W/2) state=E.create(selected); else confirmHome=true; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
       const k=E.expected(state);
@@ -111,7 +113,9 @@
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
-      if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
+      if(hit.id==='cancelHome') confirmHome=false;
+      else if(hit.id==='confirmHome') { confirmHome=false; state=null; }
+      else if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
       else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
       else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
       else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
