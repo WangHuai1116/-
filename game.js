@@ -97,14 +97,17 @@
   }
   function tap(x,y) {
     if(paused)return;
-    // 人物训练区直接执行当前指引，避免模拟器缩放让身体圈与命中框错位。
-    if (state && state.phase === 'training' && y >= 170 && y < 540) { const k=E.expected(state); E.action(state, ['chest','legs','arms','core'].includes(k)?k:'chest'); draw(); return; }
-    const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
-    if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
-    else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
-    else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
-    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
-    draw();
+    // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
+    const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
+    if (hit) {
+      if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
+      else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
+      else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
+      else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
+      draw(); return;
+    }
+    if (state && state.phase === 'training' && y >= 170 && y < 540) { E.action(state, E.expected(state)); draw(); return; }
+    return;
   }
   if(native) {
     tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const x=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const y=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(x!=null&&y!=null)tap(x/scale,y/scale);});
