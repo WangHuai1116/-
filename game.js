@@ -101,7 +101,7 @@
     if (state && state.phase === 'training' && y >= 170 && y < 540) { const k=E.expected(state); E.action(state, ['chest','legs','arms','core'].includes(k)?k:'chest'); draw(); return; }
     const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
-    else if(hit.id==='home')state=null;
+    else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
     else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
     draw();
