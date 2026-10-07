@@ -97,6 +97,8 @@
   }
   function tap(x,y) {
     if(paused)return;
+    // 人物训练区直接执行当前指引，避免模拟器缩放让身体圈与命中框错位。
+    if (state && state.phase === 'training' && y >= 170 && y < 540) { E.action(state, E.expected(state)); draw(); return; }
     const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
     else if(hit.id==='home')state=null;
