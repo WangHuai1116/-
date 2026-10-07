@@ -1,0 +1,7 @@
+{
+  "appid": "testAppId",
+  "projectname": "薄肌进化论",
+  "description": "60秒均衡训练与节奏养成小游戏样本",
+  "compileType": "game",
+  "setting": { "es6": true, "minified": false, "urlCheck": true }
+}
