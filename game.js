@@ -97,8 +97,6 @@
   }
   function tap(x,y) {
     if(paused)return;
-    // 模拟器有时返回物理坐标；首页底部开始区使用宽松兜底，保证一触即进。
-    if (!state && y >= 560) { state = E.create(selected); draw(); return; }
     // 底部操作区避开模拟器安全区坐标偏移，左右两半分别对应重开和返回。
     if (state && y >= 600) { if (x < W / 2) { state = E.create(selected); } else { state = null; } draw(); return; }
     const hit=buttons.slice().reverse().find(b=>x>=b.x-28&&x<=b.x+b.w+28&&y>=b.y-28&&y<=b.y+b.h+28);if(!hit)return;
