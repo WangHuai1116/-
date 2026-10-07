@@ -34,7 +34,6 @@
     }
     if (s.phase === 'maintain') {
       if (key !== 'water' && key !== 'sleep') { fail(s, '维持期还在猛练，变成厚肌了！'); return false; }
-      if (s.elapsed - s.lastTap < 0.45) { fail(s, '补给也不能乱点，节奏失控了'); return false; }
       s.lastTap = s.elapsed; s.message = '保持住，放松呼吸'; return true;
     }
     const interval = s.elapsed - s.lastTap;
