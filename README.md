@@ -14,7 +14,6 @@
 
 在本目录执行 `python3 -m http.server 8080`，在本机浏览器打开 `http://localhost:8080`。不需要 npm install。也可直接打开 index.html。
 
-逻辑与原生入口测试：`node --test tests/*.test.js`。
 
 ## 抖音开发者工具导入与上传
 
@@ -30,6 +29,6 @@
 - game.js：绘图、命中区域、动画、触摸、暂停和本地记录；抖音通过 tt API，浏览器通过 DOM。
 - js/engine.js：与平台无关的训练/维持/约会状态机。
 - game.json / project.config.json：小游戏配置，AppID 必须由你填写。
-- index.html：浏览器试玩入口；tests/：胜利、失败和抖音 API 模拟测试。
+- index.html：浏览器试玩入口。Node 专用测试未放入上传目录，避免抖音编译器解析 `node:` 模块。
 
 没有内置广告、支付、排行榜或服务端；这些可在样本确认后另行接入。角色是程序绘制占位美术，可后续替换为正式立绘与动作资源。
