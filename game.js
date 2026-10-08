@@ -61,12 +61,12 @@
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training';
     box(24,top+48,342,58,'#e7eddf',16);
     text(training?'DAY '+Math.min(30,Math.floor(s.elapsed/2)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
-    text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':s.phase==='walk'?'步数 '+s.walk+'/6':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
+    text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':s.phase==='walk'?'追赶 '+Math.round(s.distance)+'m/30m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*progress),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
-    body(s.phase==='walk'?85+s.walk*17:190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
+    body(s.phase==='walk'?115:190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
     if(s.phase==='walk'||s.phase==='won') {
-      body(286,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
+      body(285,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
       text('♥',286,top+162,24,'#c46b77','center');
       if(s.phase==='won') line(225,top+294,250,top+294, '#efb58f',10);
     }
@@ -75,19 +75,19 @@
         {id:'arms',x:110,y:top+222,w:38,h:103},{id:'arms',x:232,y:top+222,w:40,h:103},{id:'legs',x:145,y:top+325,w:90,h:95});
       text('胸',190,top+248,13);text('腹',190,top+291,13);text('腿',190,top+363,13);
     }
-    box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
+    if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
     const miniKey=training?(s.lastAction||exp):null, motion=Math.sin(anim*7)*5;
     if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
     else { c.rotate(miniKey==='core'?Math.sin(anim*7)*0.25:0); body(0,0,'thin',0.8,null,true); if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);} if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);} if(miniKey==='chest'||miniKey==='arms'){line(-24,motion-6,24,motion+6,ink,5);circle(-28,motion-7,7,'#8798a8');circle(28,motion+7,7,'#8798a8');} if(miniKey==='legs'){line(-12,35,-20,48+motion,ink,4);line(12,35,20,48-motion,ink,4);} }
     c.restore();
-    text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center');
+    text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); } 
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
     if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右交替 · 美女 '+Math.round(s.beautyDistance)+'m / 你 '+s.distance+'m',195,top+606,12,ink,'center'); }
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
-    text(s.message,195,top+606,12,ink,'center');
+    text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
     if(['failed','won'].includes(s.phase)) {
       box(20,top+145,350,330,'#19362b',26);text(s.phase==='won'?'♥  牵手成功':'挑战失败',195,top+199,29,lime,'center');
