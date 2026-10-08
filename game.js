@@ -76,7 +76,7 @@
     }
     box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
-    const miniKey=training?exp:null, motion=Math.sin(anim*7)*5;
+    const miniKey=training?(s.lastAction||exp):null, motion=Math.sin(anim*7)*5;
     if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
     else { c.rotate(miniKey==='core'?Math.sin(anim*7)*0.25:0); body(0,0,'thin',0.8,null,true); if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);} if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);} if(miniKey==='chest'||miniKey==='arms'){line(-24,motion-6,24,motion+6,ink,5);circle(-28,motion-7,7,'#8798a8');circle(28,motion+7,7,'#8798a8');} if(miniKey==='legs'){line(-12,35,-20,48+motion,ink,4);line(12,35,20,48-motion,ink,4);} }
     c.restore();
