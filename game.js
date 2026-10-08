@@ -80,7 +80,6 @@
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
-    const ms=['chest','arms','core','legs'];ms.forEach((m,i)=>{text(E.names[m],24+i*88,top+482,12);box(24+i*88,top+497,76,5,'#d5dfcc',2);box(24+i*88,top+497,Math.max(1,76*s.muscles[m]/6),5,green,2);});
     if(s.phase==='walk') button('walk','脚印  →  向前一步',24,top+525,342,57,green);
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
     text(s.message,195,top+606,12,ink,'center');
