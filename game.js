@@ -69,7 +69,7 @@
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       c.save();c.translate(115,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
-      const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.42,1-gap/220);
+      const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
       c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false);c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
     } else {
