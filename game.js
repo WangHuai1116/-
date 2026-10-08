@@ -67,8 +67,13 @@
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
-      body(115,top+340,E.bodyType(s)==='thick'?'thick':'thin',1,null,false);
-      body(285,top+190,'thin',0.65,null,true);text('美女',285,top+160,11,'#c46b77','center');
+      const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
+      body(115,top+340,style,1,null,false);
+      // 玩家跑步摆臂摆腿：脚步交替时幅度更明显。
+      line(95,top+430,82+run*12,top+485,ink,7);line(135,top+430,148-run*12,top+485,ink,7);line(89,top+355,70-run*8,top+405, '#efb58f',12);line(141,top+355,160+run*8,top+405, '#efb58f',12);
+      const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.42,1-gap/220);
+      c.save();c.translate(285,top+190);c.scale(far,far);body(0,0,'thin',0.65,null,true);line(-8,30, -18-run*5,55,ink,3);line(8,30,18+run*5,55,ink,3);c.restore();
+      text('美女',285,top+160,11,'#c46b77','center');
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
     }
