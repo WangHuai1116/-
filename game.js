@@ -13,7 +13,7 @@
   const c = canvas.getContext('2d'); c.scale(canvas.width / W, canvas.height / H);
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
-  let state = null, confirmHome = false, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
+  let state = null, confirmHome = false, hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
   function box(x,y,w,h,color,r) { c.fillStyle=color; c.beginPath(); const radius=Math.min(r || 16,w/2,h/2); c.moveTo(x+radius,y); c.arcTo(x+w,y,x+w,y+h,radius); c.arcTo(x+w,y+h,x,y+h,radius); c.arcTo(x,y+h,x,y,radius); c.arcTo(x,y,x+w,y,radius); c.fill(); }
@@ -75,7 +75,11 @@
       text('胸',190,top+248,13);text('腹',190,top+291,13);text('腿',190,top+363,13);
     }
     box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
-    c.save();c.translate(314,top+223);c.rotate(training&&exp==='core'?Math.sin(anim*5)*0.3:0);body(0,0,'thin',0.8,null,true);c.restore();
+    c.save();c.translate(314,top+223);
+    const miniKey=training?exp:null, motion=Math.sin(anim*7)*5;
+    if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
+    else { c.rotate(miniKey==='core'?Math.sin(anim*7)*0.25:0); body(0,0,'thin',0.8,null,true); if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);} if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);} if(miniKey==='chest'||miniKey==='arms'){line(-24,motion-6,24,motion+6,ink,5);circle(-28,motion-7,7,'#8798a8');circle(28,motion+7,7,'#8798a8');} if(miniKey==='legs'){line(-12,35,-20,48+motion,ink,4);line(12,35,20,48-motion,ink,4);} }
+    c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center');
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
@@ -127,7 +131,7 @@
   }
   if(native) {
     tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const x=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const y=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(x!=null&&y!=null)tap(x/scale,y/scale);});
-    tt.onHide(function(){paused=true;});tt.onShow(function(){paused=false;last=0;});
+    tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();tap((e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height);});
     document.addEventListener('visibilitychange',function(){paused=document.hidden;last=0;});
