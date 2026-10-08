@@ -54,7 +54,8 @@
       text('② 点击立即响应，跟着指引均衡训练',30,top+530,14);
       text('③ 60秒结束时70～80分，解锁迎娶',30,top+558,14);
       text('前期+2，70分后+0.5；每秒-0.7，超过100失败',30,top+586,13,'#92714f');
-      button('start','开始 30 天挑战  →',24,top+613,342,56,green);
+      button('start','开始30天',24,top+613,205,56,green);
+      button('chase','直接追美女',241,top+613,125,56,'#d38350');
       text('成功记录 '+best+' 次  ·  夸张玩法，不是健身指导',195,top+686,11,'#718375','center');return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training';
@@ -126,6 +127,7 @@
       else if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
       else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
       else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
+      else if(hit.id==='chase')state=E.create(selected,true);
       else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
       draw(); return;
     }
