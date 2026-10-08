@@ -103,6 +103,8 @@
     if(paused)return;
     // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
     if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
+    // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
+    if (state && state.phase==='walk' && y>=480 && y<850) { const was=state.phase; E.action(state,'walk'); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
     if (state && y>=700) { if (x < W/2) state=E.create(selected); else confirmHome=true; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
