@@ -64,9 +64,16 @@
     text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':s.phase==='walk'?'追赶 '+Math.round(s.distance)+'m/30m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*progress),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
-    body(s.phase==='walk'?115:190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
+    if(s.phase==='walk') {
+      c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
+      for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
+      body(115,top+340,E.bodyType(s)==='thick'?'thick':'thin',1,null,false);
+      body(285,top+190,'thin',0.65,null,true);text('美女',285,top+160,11,'#c46b77','center');
+    } else {
+      body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
+    }
     if(s.phase==='walk'||s.phase==='won') {
-      body(285,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
+      if(s.phase!=='walk') body(285,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
       text('♥',286,top+162,24,'#c46b77','center');
       if(s.phase==='won') line(225,top+294,250,top+294, '#efb58f',10);
     }
