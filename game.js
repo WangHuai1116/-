@@ -116,8 +116,8 @@
     if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
     // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
     if (state && state.phase==='fallen' && y>=300 && y<850) { E.action(state,'recover'); draw(); return; }
-    if (state && state.phase==='walk' && x>=W/2 && y>=650) { confirmHome=true; draw(); return; }
-    if (state && state.phase==='walk' && y>=480 && y<650) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
+    if (state && state.phase==='walk' && x>=W/2 && y>=820) { confirmHome=true; draw(); return; }
+    if (state && state.phase==='walk' && y>=420 && y<820) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
     if (state && y>=700) { if (x < W/2) state=E.create(selected); else confirmHome=true; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
@@ -136,7 +136,7 @@
       if(hit.id==='cancelHome') confirmHome=false;
       else if(hit.id==='confirmHome') { confirmHome=false; state=null; }
       else if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
-      else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
+      else if(hit.id==='home') { if(state && (state.phase==='training'||state.phase==='walk')) return; state=null; }
       else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
       else if(hit.id==='chase')state=E.create(selected,true);
       else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
