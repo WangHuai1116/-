@@ -117,7 +117,6 @@
     // 追逐阶段先处理左右脚，不能被返回区域抢走。
     if (state && state.phase==='walk' && y<760) { E.action(state,x<W/2?'left':'right'); draw(); return; }
     // 右下角返回只认最底部区域，避免误触右脚。
-    if (state && x>=W*0.65 && y>=760) { confirmHome=true; draw(); return; }
     // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
     if (state && state.phase==='fallen' && y>=300 && y<850) { E.action(state,'recover'); draw(); return; }
     if (state && state.phase==='walk' && y>=480 && y<850) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
@@ -133,6 +132,8 @@
         const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
       }
     }
+    // 训练提示已经优先处理完毕后，才识别最底部返回按钮。
+    if (state && x>=W*0.65 && y>=760) { confirmHome=true; draw(); return; }
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
