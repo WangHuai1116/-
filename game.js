@@ -58,7 +58,7 @@
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
       text('成功记录 '+best+' 次  ·  夸张玩法，不是健身指导',195,top+686,11,'#718375','center');return;
     }
-    const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/150));
+    const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
     text(training?'DAY '+Math.min(30,Math.floor(s.elapsed/2)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
     text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
