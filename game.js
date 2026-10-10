@@ -128,7 +128,7 @@
     draw();
   }
   if(native) {
-    tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const x=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const y=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(x!=null&&y!=null)tap(x/scale,y/scale);});
+    tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const rawX=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const rawY=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(rawX!=null&&rawY!=null){const x=rawX*W/(info.windowWidth||W);const y=rawY*H/(info.windowHeight||H);tap(x,y);}});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();tap((e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height);});
