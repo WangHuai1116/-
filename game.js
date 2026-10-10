@@ -112,40 +112,20 @@
   }
   function tap(x,y) {
     if(paused)return;
-    // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
-    if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
-    // 追逐阶段先处理左右脚，不能被返回区域抢走。
-    if (state && state.phase==='walk' && (x<W/2 || y<800)) { const was=state.phase; E.action(state,x<W/2?'left':'right'); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
-    // 右下角返回只认最底部区域，避免误触右脚。
-    // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
-    if (state && state.phase==='fallen' && y>=300 && y<620) { E.action(state,'recover'); draw(); return; }
-    // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
-    if (state && state.phase === 'training') {
-      // 右侧训练小窗只是展示，点击不产生任何游戏效果。
-      if (x>=245 && x<=375 && y>=150 && y<=470) return;
-      const k=E.expected(state);
-      if (['chest','arms','core','legs'].includes(k) && y>=120 && y<620) { E.action(state,k); draw(); return; }
-      if (k==='sleep' && x>=W*0.58 && y>=420 && y<620) { E.action(state,'sleep'); draw(); return; }
-      if (['water','protein','sleep'].includes(k) && y>=420 && y<620) {
-        const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
-      }
-    }
-    // main20 基底的返回按钮独立使用右下矩形。
-    if (state && x>=W/2 && y>=800) { confirmHome=true; draw(); return; }
-    // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
-    const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
-    if (hit) {
-      if(hit.id==='cancelHome') confirmHome=false;
-      else if(hit.id==='confirmHome') { confirmHome=false; state=null; }
-      else if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
-      else if(hit.id==='home') { if(state && state.phase==='training') return; state=null; }
-      else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
-      else if(hit.id==='chase')state=E.create(selected,true);
-      else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
+    if (confirmHome) {
+      const modal=buttons.slice().reverse().find(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);
+      if(modal&&modal.id==='cancelHome') confirmHome=false;
+      else if(modal&&modal.id==='confirmHome'){confirmHome=false;state=null;}
       draw(); return;
     }
-    if (state && state.phase === 'training' && y >= 120 && y < 700) { E.action(state, E.expected(state)); draw(); return; }
-    return;
+    const hit=buttons.slice().reverse().find(b=>x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=b.y+b.h+10);
+    if(!hit)return;
+    if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
+    else if(hit.id==='home') { confirmHome=true; }
+    else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
+    else if(hit.id==='chase')state=E.create(selected,true);
+    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
+    draw();
   }
   if(native) {
     tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const x=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const y=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(x!=null&&y!=null)tap(x/scale,y/scale);});
