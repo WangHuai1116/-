@@ -118,15 +118,15 @@
     if (state && state.phase==='fallen' && y>=300 && y<850) { E.action(state,'recover'); draw(); return; }
     if (state && state.phase==='walk' && x>=W/2 && y>=820) { confirmHome=true; draw(); return; }
     if (state && state.phase==='walk' && y>=420 && y<820) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
-    if (state && y>=700) { if (x < W/2) state=E.create(selected); else confirmHome=true; draw(); return; }
+    if (state && x>=W/2 && y>=620) { confirmHome=true; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
       // 右侧训练小窗只是展示，点击不产生任何游戏效果。
       if (x>=245 && x<=375 && y>=150 && y<=470) return;
       const k=E.expected(state);
-      if (['chest','arms','core','legs'].includes(k) && y>=120 && y<700) { E.action(state,k); draw(); return; }
-      if (k==='sleep' && x>=W*0.58 && y>=420 && y<700) { E.action(state,'sleep'); draw(); return; }
-      if (['water','protein','sleep'].includes(k) && y>=420 && y<700) {
+      if (['chest','arms','core','legs'].includes(k) && y>=120 && y<620) { E.action(state,k); draw(); return; }
+      if (k==='sleep' && x>=W*0.58 && y>=420 && y<620) { E.action(state,'sleep'); draw(); return; }
+      if (['water','protein','sleep'].includes(k) && y>=420 && y<620) {
         const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
       }
     }
