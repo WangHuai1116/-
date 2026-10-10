@@ -132,7 +132,7 @@
       }
     }
     // 最底部返回按钮使用更低的专属区域，和睡觉按钮分开。
-    if (state && state.phase!=='training' && x>=W*0.65 && y>=850) { confirmHome=true; draw(); return; }
+    if (state && x>=W*0.65 && y>=850) { confirmHome=true; draw(); return; }
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
