@@ -115,11 +115,10 @@
     // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
     if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
     // 追逐阶段先处理左右脚，不能被返回区域抢走。
-    if (state && state.phase==='walk' && y<620) { E.action(state,x<W/2?'left':'right'); draw(); return; }
+    if (state && state.phase==='walk' && (x<W/2 || y<800)) { const was=state.phase; E.action(state,x<W/2?'left':'right'); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
     // 右下角返回只认最底部区域，避免误触右脚。
     // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
     if (state && state.phase==='fallen' && y>=300 && y<620) { E.action(state,'recover'); draw(); return; }
-    if (state && state.phase==='walk' && y>=420 && y<620) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
       // 右侧训练小窗只是展示，点击不产生任何游戏效果。
@@ -132,7 +131,7 @@
       }
     }
     // main20 基底的返回按钮独立使用右下矩形。
-    if (state && x>=W/2 && y>=620) { confirmHome=true; draw(); return; }
+    if (state && x>=W/2 && y>=800) { confirmHome=true; draw(); return; }
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
