@@ -46,7 +46,7 @@
     text('薄肌进化论',24,top,24);text('BODY LAB / 01',24,top+27,10,'#6c8274');
     if(!state) {
       box(24,top+55,342,360,'#e6eddc',26);text('30 天，练到刚刚好',195,top+88,24,ink,'center');
-      text('一局 60 秒 · 节奏比手速更重要',195,top+118,14,'#637b67','center');
+      text('一局 30 秒 · 节奏比手速更重要',195,top+118,14,'#637b67','center');
       body(195,top+198,selected,0,null,false);
       button('fat','胖胖开局',40,top+428,147,48,selected==='fat'?green:'#809482');
       button('thin','瘦瘦开局',203,top+428,147,48,selected==='thin'?green:'#809482');
@@ -60,8 +60,8 @@
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
-    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed/2)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
-    text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
+    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
+    text(training?Math.max(0,30-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*(chasing?chaseFill:progress)),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
     if(s.phase==='walk') {
