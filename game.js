@@ -46,7 +46,7 @@
     text('薄肌进化论',24,top,24);text('BODY LAB / 01',24,top+27,10,'#6c8274');
     if(!state) {
       box(24,top+55,342,360,'#e6eddc',26);text('30 天，练到刚刚好',195,top+88,24,ink,'center');
-      text('一局 30 秒 · 节奏比手速更重要',195,top+118,14,'#637b67','center');
+      text('一局 60 秒 · 节奏比手速更重要',195,top+118,14,'#637b67','center');
       body(195,top+198,selected,0,null,false);
       button('fat','胖胖开局',40,top+428,147,48,selected==='fat'?green:'#809482');
       button('thin','瘦瘦开局',203,top+428,147,48,selected==='thin'?green:'#809482');
@@ -58,11 +58,11 @@
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
       text('成功记录 '+best+' 次  ·  夸张玩法，不是健身指导',195,top+686,11,'#718375','center');return;
     }
-    const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
+    const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training';
     box(24,top+48,342,58,'#e7eddf',16);
-    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
-    text(training?Math.max(0,30-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
-    box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*(chasing?chaseFill:progress)),5,green,2);
+    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed/2)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
+    text(training?Math.max(0,60-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':s.phase==='walk'?'追赶 '+Math.round(s.distance)+'m/30m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
+    box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*progress),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
@@ -95,7 +95,7 @@
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
-    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右交替 · 距女生 '+E.gap(s).toFixed(1)+'m',195,top+606,12,ink,'center'); }
+    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右交替 · 美女 '+Math.round(s.beautyDistance)+'m / 你 '+s.distance+'m',195,top+606,12,ink,'center'); }
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
     text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
@@ -114,12 +114,10 @@
     if(paused)return;
     // 底部两个固定操作优先级最高，避免被睡觉或人物提示覆盖。
     if (confirmHome) { if (x < W/2) confirmHome=false; else { confirmHome=false; state=null; } draw(); return; }
-    // 追逐阶段先处理左右脚，不能被返回区域抢走。
-    if (state && state.phase==='walk' && y<760) { E.action(state,x<W/2?'left':'right'); draw(); return; }
-    // 右下角返回只认最底部区域，避免误触右脚。
     // 迎娶关卡的脚印按钮优先于底部导航，避免坐标偏移误触退出。
     if (state && state.phase==='fallen' && y>=300 && y<850) { E.action(state,'recover'); draw(); return; }
     if (state && state.phase==='walk' && y>=480 && y<850) { const foot=x<W/2?'left':'right'; const was=state.phase; E.action(state,foot); if(was!=='won'&&state.phase==='won')saveWin(); draw(); return; }
+    if (state && y>=700) { if (x < W/2) state=E.create(selected); else confirmHome=true; draw(); return; }
     // 按当前教练提示优先命中，兼容模拟器安全区和缩放偏移。
     if (state && state.phase === 'training') {
       // 右侧训练小窗只是展示，点击不产生任何游戏效果。
@@ -131,8 +129,6 @@
         const slot=x < W/3 ? 'water' : x < W*2/3 ? 'protein' : 'sleep'; E.action(state,slot); draw(); return;
       }
     }
-    // 最底部返回按钮使用更低的专属区域，和睡觉按钮分开。
-    if (state && x>=W*0.65 && y>=850) { confirmHome=true; draw(); return; }
     // 先处理明确按钮，再处理人物区域，避免人物兜底吞掉补给按钮。
     const hit=buttons.slice().reverse().find(b=>x>=b.x-36&&x<=b.x+b.w+36&&y>=b.y-36&&y<=b.y+b.h+36);
     if (hit) {
