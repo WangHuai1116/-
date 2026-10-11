@@ -56,8 +56,14 @@
       text('前期+2，70分后+0.5；每秒-0.7，超过100失败',30,top+586,13,'#92714f');
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
-      button('sidebar', '侧边栏福利',24,top+676,342,42,'#d38350');
-      text('从抖音首页侧边栏回来，可领取每日训练加成',195,top+731,11,'#718375','center');return;
+      // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
+      const fx=340, fy=top+122, fr=30;
+      circle(fx,fy,fr,'#d38350');
+      circle(fx,fy,fr-4,'#f28a43');
+      text('福利',fx,fy-5,12,'#fff','center');
+      text('↗',fx,fy+12,13,'#fff','center');
+      buttons.push({id:'sidebar',x:fx-fr,y:fy-fr,w:fr*2,h:fr*2});
+      text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
