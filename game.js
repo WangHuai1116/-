@@ -56,7 +56,8 @@
       text('前期+2，70分后+0.5；每秒-0.7，超过100失败',30,top+586,13,'#92714f');
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
-      text('成功记录 '+best+' 次  ·  夸张玩法，不是健身指导',195,top+686,11,'#718375','center');return;
+      button('sidebar', '侧边栏福利',24,top+676,342,42,'#d38350');
+      text('从抖音首页侧边栏回来，可领取每日训练加成',195,top+731,11,'#718375','center');return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
@@ -124,6 +125,11 @@
     else if(hit.id==='home') { confirmHome=true; }
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
     else if(hit.id==='chase')state=E.create(selected,true);
+    else if(hit.id==='sidebar') {
+      if(native && typeof tt.navigateToScene==='function') {
+        try { tt.navigateToScene({scene:'sidebar'}); } catch (_) {}
+      }
+    }
     else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
     draw();
   }
