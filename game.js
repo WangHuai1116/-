@@ -58,7 +58,8 @@
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
       // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
-      const fx=floatX, fy=floatY || (top+122), fr=30;
+      if(!floatY) floatY=top+122;
+      const fx=floatX, fy=floatY, fr=30;
       circle(fx,fy,fr,'#d38350');
       circle(fx,fy,fr-4,'#f28a43');
       text('福利',fx,fy-5,12,'#fff','center');
