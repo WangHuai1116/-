@@ -14,6 +14,7 @@
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
   let state = null, confirmHome = false, hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
+  let floatX = 340, floatY = 0, touchStart = null, touchMoved = false;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
   function box(x,y,w,h,color,r) { c.fillStyle=color; c.beginPath(); const radius=Math.min(r || 16,w/2,h/2); c.moveTo(x+radius,y); c.arcTo(x+w,y,x+w,y+h,radius); c.arcTo(x+w,y+h,x,y+h,radius); c.arcTo(x,y+h,x,y,radius); c.arcTo(x,y,x+w,y,radius); c.fill(); }
@@ -57,7 +58,7 @@
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
       // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
-      const fx=340, fy=top+122, fr=30;
+      const fx=floatX, fy=floatY || (top+122), fr=30;
       circle(fx,fy,fr,'#d38350');
       circle(fx,fy,fr-4,'#f28a43');
       text('福利',fx,fy-5,12,'#fff','center');
@@ -139,11 +140,29 @@
     else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
     draw();
   }
+  function canvasPoint(t) {
+    const rawX=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);
+    const rawY=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);
+    if(rawX==null||rawY==null)return null;
+    return {x:rawX*W/(info.windowWidth||W),y:rawY*H/(info.windowHeight||H)};
+  }
+  function floatingHit(p) {
+    return !state && floatY && Math.hypot(p.x-floatX,p.y-floatY)<=34;
+  }
+  function finishTouch(p) {
+    if(!touchStart||!p)return;
+    if(!touchMoved) tap(touchStart.x,touchStart.y);
+    touchStart=null; touchMoved=false;
+  }
   if(native) {
-    tt.onTouchStart(function(e){const t=e.touches&&e.touches[0];if(!t)return;const rawX=t.clientX!=null?t.clientX:(t.pageX!=null?t.pageX:t.x);const rawY=t.clientY!=null?t.clientY:(t.pageY!=null?t.pageY:t.y);if(rawX!=null&&rawY!=null){const x=rawX*W/(info.windowWidth||W);const y=rawY*H/(info.windowHeight||H);tap(x,y);}});
+    tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
+    if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    if(tt.onTouchEnd) tt.onTouchEnd(function(e){finishTouch(canvasPoint(e.changedTouches&&e.changedTouches[0]));});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
-    canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();tap((e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height);});
+    canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
+    canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    canvas.addEventListener('pointerup',function(e){const r=canvas.getBoundingClientRect();finishTouch({x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height});});
     document.addEventListener('visibilitychange',function(){paused=document.hidden;last=0;});
   }
   const raf = typeof requestAnimationFrame==='function'?requestAnimationFrame:canvas.requestAnimationFrame ? canvas.requestAnimationFrame.bind(canvas):function(fn){return setTimeout(function(){fn(Date.now());},16);};
