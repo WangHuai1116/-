@@ -112,10 +112,12 @@
       }
       // 身体部位标签始终保留，手臂任务额外显示左右臂标签。
       text('胸',190,top+248,13);text('腹',190,top+301,13);text('腿',190,top+363,13);
-      // 将“臂”固定在左右手臂模型表面，胖体型和瘦体型均按当前宽度定位。
-      const armTextY=cy+42;
-      text('臂',190-broad-8,armTextY,11,ink,'center');
-      text('臂',190+broad+8,armTextY,11,ink,'center');
+      // 普通任务显示贴在模型上的左右臂标签；手臂任务只显示圆圈内标签。
+      if(exp!=='arms') {
+        const armTextY=cy+42;
+        text('臂',190-broad-8,armTextY,11,ink,'center');
+        text('臂',190+broad+8,armTextY,11,ink,'center');
+      }
     }
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
