@@ -104,7 +104,9 @@
         circle(134,top+270+wobble,25,s.armHits.left?'#9bb79d':lime);circle(134,top+270+wobble,20,cream);
         circle(246,top+270-wobble,25,s.armHits.right?'#9bb79d':lime);circle(246,top+270-wobble,20,cream);
         text('臂',134,top+270+wobble,13);text('臂',246,top+270-wobble,13);
-      } else { text('胸',190,top+248,13);text('腹',190,top+301,13);text('腿',190,top+363,13); }
+      }
+      // 身体部位标签始终保留，手臂任务额外显示左右臂标签。
+      text('胸',190,top+248,13);text('腹',190,top+301,13);text('腿',190,top+363,13);
     }
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
