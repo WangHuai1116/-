@@ -85,6 +85,8 @@
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
+      line(195,top+180,195,top+500,'#c2d9bc',3);
+      (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const yy=top+470-d*9,xx=o.lane===0?145:245;box(xx-22,yy-14,44,28,o.type==='栅栏'?'#b86f45':'#e6d34f',8);text(o.type==='栅栏'?'栏':'皮',xx,yy,13,'#fff','center');}});
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       c.save();c.translate(115,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
@@ -130,7 +132,7 @@
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
-    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右交替 · 距女生 '+E.gap(s).toFixed(1)+'m',195,top+606,12,ink,'center'); }
+    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('laneLeft','左滑换道',24,top+525,162,57,green); button('laneRight','右滑换道',204,top+525,162,57,green); text('左右滑动躲避障碍 · 距女生 '+E.gap(s).toFixed(1)+'m',195,top+606,12,ink,'center'); }
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
     text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
@@ -178,16 +180,17 @@
   }
   function finishTouch(p) {
     if(!touchStart||!p)return;
-    if(!touchMoved) tap(touchStart.x,touchStart.y);
+    if(touchMoved && state&&state.phase==='walk'){const dx=p.x-touchStart.x;if(Math.abs(dx)>24) tap(dx<0?touchStart.x-100:touchStart.x+100,touchStart.y);}
+    else if(!touchMoved) tap(touchStart.x,touchStart.y);
     touchStart=null; touchMoved=false;
   }
   if(native) {
-    tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
+    tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
     if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     if(tt.onTouchEnd) tt.onTouchEnd(function(e){finishTouch(canvasPoint(e.changedTouches&&e.changedTouches[0]));});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
-    canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
+    canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
     canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     canvas.addEventListener('pointerup',function(e){const r=canvas.getBoundingClientRect();finishTouch({x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height});});
     document.addEventListener('visibilitychange',function(){paused=document.hidden;last=0;});
