@@ -89,7 +89,7 @@
       c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false);c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
     } else {
-      body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training?exp:null,false);
+      body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
     }
     if(s.phase==='walk'||s.phase==='won') {
       if(s.phase!=='walk') body(285,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
