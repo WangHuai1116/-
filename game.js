@@ -97,9 +97,14 @@
       if(s.phase==='won') line(225,top+294,250,top+294, '#efb58f',10);
     }
     if(training) {
-      buttons.push({id:'chest',x:148,y:top+221,w:84,h:49},{id:'core',x:148,y:top+270,w:84,h:50},
-        {id:'arms',x:110,y:top+222,w:38,h:103},{id:'arms',x:232,y:top+222,w:40,h:103},{id:'legs',x:145,y:top+325,w:90,h:95});
-      text('胸',190,top+248,13);text('腹',190,top+291,13);text('腿',190,top+363,13);
+      const wobble=Math.sin(anim*6)*2;
+      buttons.push({id:'chest',x:150,y:top+220,w:80,h:56},{id:'core',x:150,y:top+276,w:80,h:50},{id:'legs',x:145,y:top+326,w:90,h:95});
+      if(exp==='arms'){
+        buttons.push({id:'armLeft',x:105,y:top+220,w:58,h:105},{id:'armRight',x:217,y:top+220,w:58,h:105});
+        circle(134,top+270+wobble,25,s.armHits.left?'#9bb79d':lime);circle(134,top+270+wobble,20,cream);
+        circle(246,top+270-wobble,25,s.armHits.right?'#9bb79d':lime);circle(246,top+270-wobble,20,cream);
+        text('臂',134,top+270+wobble,13);text('臂',246,top+270-wobble,13);
+      } else { text('胸',190,top+248,13);text('腹',190,top+301,13);text('腿',190,top+363,13); }
     }
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
