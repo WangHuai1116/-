@@ -1,0 +1,3 @@
+# Node.js validation files must never be included in the Douyin mini-game package.
+tests/
+*.test.js
