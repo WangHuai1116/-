@@ -40,6 +40,13 @@
     }
     c.restore();
   }
+  function haptic(kind) {
+    if(!native) return;
+    try {
+      if(typeof tt.vibrateShort==='function') { tt.vibrateShort({type:kind==='error'?'heavy':'light'}); return; }
+      if(kind==='error' && typeof tt.vibrateLong==='function') tt.vibrateLong({});
+    } catch (_) {}
+  }
   function saveWin() { best++;try { if(native) tt.setStorageSync('fitness-best',best);else localStorage.setItem('fitness-best',best); } catch (_) {} }
   function draw() {
     buttons=[];box(0,0,W,H,cream,0);
@@ -138,7 +145,7 @@
         try { tt.navigateToScene({scene:'sidebar'}); } catch (_) {}
       }
     }
-    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(native&&accepted&&tt.vibrateShort)tt.vibrateShort({}); }
+    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(accepted) haptic(state.phase==='failed'?'error':'success'); }
     draw();
   }
   function canvasPoint(t) {
