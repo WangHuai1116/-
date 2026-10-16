@@ -97,6 +97,10 @@
       if(s.phase==='won') line(225,top+294,250,top+294, '#efb58f',10);
     }
     if(training) {
+      const bodyKind=E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin';
+      const bodyProgress=E.bodyType(s)==='original'?0:1;
+      const broad=bodyWidth(bodyKind,bodyProgress);
+      const cy=top+227+(s.events?Math.sin(anim*6)*2:0);
       const wobble=Math.sin(anim*6)*2;
       buttons.push({id:'chest',x:150,y:top+220,w:80,h:56},{id:'core',x:150,y:top+276,w:80,h:50},{id:'legs',x:145,y:top+326,w:90,h:95});
       if(exp==='arms'){
