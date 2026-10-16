@@ -101,8 +101,8 @@
       buttons.push({id:'chest',x:150,y:top+220,w:80,h:56},{id:'core',x:150,y:top+276,w:80,h:50},{id:'legs',x:145,y:top+326,w:90,h:95});
       if(exp==='arms'){
         buttons.push({id:'armLeft',x:105,y:top+220,w:58,h:105},{id:'armRight',x:217,y:top+220,w:58,h:105});
-        circle(134,top+270+wobble,25,s.armHits.left?'#9bb79d':lime);circle(134,top+270+wobble,20,cream);
-        circle(246,top+270-wobble,25,s.armHits.right?'#9bb79d':lime);circle(246,top+270-wobble,20,cream);
+        const armRing=(x,y,done)=>{c.strokeStyle=done?'#9bb79d':lime;c.lineWidth=5;c.beginPath();c.arc(x,y,23,0,Math.PI*2);c.stroke();};
+        armRing(134,top+270+wobble,s.armHits.left);armRing(246,top+270-wobble,s.armHits.right);
         text('臂',134,top+270+wobble,13);text('臂',246,top+270-wobble,13);
       }
       // 身体部位标签始终保留，手臂任务额外显示左右臂标签。
