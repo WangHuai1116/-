@@ -2,7 +2,7 @@
 const names={chest:'胸部',arms:'手臂',core:'腹部',legs:'腿部',water:'喝水',protein:'蛋白粉',sleep:'睡觉'};
 const base=['chest','legs','arms','core','water','protein','sleep'];
 function makePlan(){const p=[];for(let r=0;r<6;r++){const a=base.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}p.push(...a);}return p;}
-function create(body,skipTraining){return{body:body==='thin'?'thin':'fat',phase:skipTraining?'walk':'training',elapsed:skipTraining?30:0,step:0,plan:makePlan(),muscles:{chest:0,arms:0,core:0,legs:0},energy:100,heat:0,progress:0,lastTap:-99,maintain:0,walk:0,fallTaps:0,distance:0,beautyDistance:skipTraining?30:0,nextFoot:'left',velocity:0,onGround:true,message:'跟着教练，点击发光部位',lastAction:null,reason:'',events:0,combo:0,tiles:0,score:0,active:false,armHits:{left:false,right:false}};}
+function create(body,skipTraining){return{body:body==='thin'?'thin':'fat',phase:skipTraining?'walk':'training',elapsed:skipTraining?30:0,step:0,plan:makePlan(),muscles:{chest:0,arms:0,core:0,legs:0},energy:100,heat:0,progress:0,lastTap:-99,maintain:0,walk:0,fallTaps:0,distance:0,beautyDistance:skipTraining?30:0,nextFoot:'left',velocity:0,onGround:true,message:'跟着教练，点击发光部位',lastAction:null,reason:'',events:0,combo:0,tiles:0,score:0,active:false,armHits:{left:false,right:false},lane:0,obstacles:[],obstacleClock:1.5};}
 function expected(s){return s.plan[s.step%s.plan.length];}
 function fail(s,r){s.phase='failed';s.reason=r;s.message=r;}
 function startChase(s){s.phase='walk';s.distance=0;s.beautyDistance=30;s.walk=0;s.fallTaps=0;s.nextFoot='left';s.onGround=true;}
