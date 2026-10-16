@@ -23,7 +23,7 @@
   function line(x,y,xx,yy,color,w) { c.strokeStyle=color;c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(xx,yy);c.stroke(); }
   function button(id,label,x,y,w,h,color) { box(x,y,w,h,color||green,16);text(label,x+w/2,y+h/2,17,color===lime?ink:'#fff','center');buttons.push({id,x,y,w,h}); }
   function bodyWidth(kind,progress) { return kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9; }
-  function body(cx,cy,kind,progress,focus,small) {
+  function body(cx,cy,kind,progress,focus,small,female) {
     c.save(); c.translate(cx,cy); c.scale(small ? 0.34 : 1, small ? 0.34 : 1);
     const skin='#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
@@ -34,6 +34,7 @@
     box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,green,9);
     circle(0,-36,27,skin);box(-26,-61,52,18,ink,8);
     circle(-9,-37,2,ink);circle(9,-37,2,ink);line(-6,-24,6,-24,ink,2);
+    if(female){ c.fillStyle='#5a2b27';c.beginPath();c.arc(0,-55,25,Math.PI,Math.PI*2);c.fill();c.fillStyle='#e75f82';c.beginPath();c.moveTo(-24,88);c.lineTo(24,88);c.lineTo(31,118);c.lineTo(-31,118);c.closePath();c.fill(); }
     if(progress>0.4) { line(0,14,0,80,'#cd8e70',2);line(-22,39,22,39,'#cd8e70',2);line(-16,58,16,58,'#cd8e70',2); }
     if(!small && focus) {
       const map={chest:[0,24,37],arms:[-broad-8,47,22],core:[0,70,27],legs:[0,143,37]};
@@ -87,14 +88,14 @@
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       c.save();c.translate(115,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
-      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false);c.restore();
+      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false,true);text('♥',0,-78,24,'#e75f82','center');c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
     }
     if(s.phase==='walk'||s.phase==='won') {
       if(s.phase!=='walk') body(285,top+227,'thin',0.65,null,false);box(253,top+259,66,65,'#d39b94',15);
-      text('♥',286,top+162,24,'#c46b77','center');
+      if(s.phase==='won') text('♥',286,top+162,24,'#c46b77','center');
       if(s.phase==='won') line(225,top+294,250,top+294, '#efb58f',10);
     }
     if(training) {
