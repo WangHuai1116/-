@@ -38,15 +38,15 @@
       line(-52,166,-64,166,ink,16); line(52,166,64,166,ink,16);
     } else if(pose==='legs'){
       const bend=Math.max(0,Math.sin(anim*3.2));
-      line(-21,102,-48,130+bend*16,skin,25); line(-48,130+bend*16,-27,169+bend*10,skin,25);
-      line(21,102,48,130+bend*16,skin,25); line(48,130+bend*16,27,169+bend*10,skin,25);
+      line(-21,102,-44,130+bend*10,skin,25); line(-44,130+bend*10,-27,169+bend*6,skin,25);
+      line(21,102,44,130+bend*10,skin,25); line(44,130+bend*10,27,169+bend*6,skin,25);
       line(-27,174,-41,174,ink,16); line(27,174,41,174,ink,16);
     } else {
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
       line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
     }
     if(pose==='core') { const fold=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-fold*30); c.scale(1,0.72+fold*0.18); c.translate(0,-105); corePoseSaved=true; }
-    else if(pose==='legs') { const squat=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-squat*30); c.scale(1,0.78+squat*0.22); c.translate(0,-105); corePoseSaved=true; }
+    else if(pose==='legs') { const squat=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-squat*20); c.scale(1,0.86+squat*0.14); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
     else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); }
     else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
