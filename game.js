@@ -42,6 +42,9 @@
     }
     c.restore();
   }
+  let swipeAudio=null;
+  if(native && typeof tt.createInnerAudioContext==='function'){try{swipeAudio=tt.createInnerAudioContext();swipeAudio.src='assets/swipe.wav';swipeAudio.volume=0.65;}catch(_){} }
+  function playSwipe(){try{if(swipeAudio){swipeAudio.stop();swipeAudio.play();}}catch(_){} }
   function haptic(kind) {
     if(!native) return;
     try {
@@ -180,18 +183,18 @@
   }
   function finishTouch(p) {
     if(!touchStart||!p)return;
-    if(touchMoved && state&&state.phase==='walk'){const dx=p.x-touchStart.x;if(Math.abs(dx)>24){E.action(state,dx<0?'laneLeft':'laneRight');draw();}}
+    if(touchMoved && state&&state.phase==='walk'){const dx=p.x-touchStart.x;if(Math.abs(dx)>24){E.action(state,dx<0?'laneLeft':'laneRight');playSwipe();draw();}}
     else if(!touchMoved) tap(touchStart.x,touchStart.y);
     touchStart=null; touchMoved=false; swipeHandled=false;
   }
   if(native) {
     tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
-    if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;E.action(state,dx<0?'laneLeft':'laneRight');draw();return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;E.action(state,dx<0?'laneLeft':'laneRight');playSwipe();draw();return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     if(tt.onTouchEnd) tt.onTouchEnd(function(e){const t=(e.changedTouches&&e.changedTouches[0])||(e.touches&&e.touches[0]);finishTouch(canvasPoint(t));});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
-    canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;E.action(state,dx<0?'laneLeft':'laneRight');draw();return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;E.action(state,dx<0?'laneLeft':'laneRight');playSwipe();draw();return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     canvas.addEventListener('pointerup',function(e){const r=canvas.getBoundingClientRect();finishTouch({x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height});});
     document.addEventListener('visibilitychange',function(){paused=document.hidden;last=0;});
   }
