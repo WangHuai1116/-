@@ -46,7 +46,7 @@
     }
     if(pose==='core') { const fold=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-fold*30); c.scale(1,0.72+fold*0.18); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
-    else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); line(-broad-27,ly,-broad-2,ly,'#59636d',7); line(broad+2,ry,broad+27,ry,'#59636d',7); circle(-broad-14,ly,12,'#59636d'); circle(broad+14,ry,12,'#59636d'); }
+    else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); }
     else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
     else line(-broad+4,9,-broad-14,77,skin,armW);
     if(!pose || (pose!=='chest' && pose!=='arms' && pose!=='core')) line(broad-4,9,broad+14,77,skin,armW);
