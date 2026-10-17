@@ -23,14 +23,18 @@
   function line(x,y,xx,yy,color,w) { c.strokeStyle=color;c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(xx,yy);c.stroke(); }
   function button(id,label,x,y,w,h,color) { box(x,y,w,h,color||green,16);text(label,x+w/2,y+h/2,17,color===lime?ink:'#fff','center');buttons.push({id,x,y,w,h}); }
   function bodyWidth(kind,progress) { return kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9; }
-  function body(cx,cy,kind,progress,focus,small,female) {
+  function body(cx,cy,kind,progress,focus,small,female,pose) {
     c.save(); c.translate(cx,cy); c.scale(small ? 0.34 : 1, small ? 0.34 : 1);
     const skin='#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
     c.translate(0,bounce);
+    const armW=kind==='thin'?15:23;
     line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
     line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
-    line(-broad+4,9,-broad-14,77,skin,kind==='thin'?15:23);line(broad-4,9,broad+14,77,skin,kind==='thin'?15:23);
+    if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
+    else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; line(-broad+4,9,-broad-14,35-curl*28,skin,armW); line(broad-4,9,broad+14,35-(1-curl)*28,skin,armW); }
+    else line(-broad+4,9,-broad-14,77,skin,armW);
+    if(!pose || (pose!=='chest' && pose!=='arms')) line(broad-4,9,broad+14,77,skin,armW);
     box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,green,9);
     circle(0,-36,27,skin);box(-26,-61,52,18,ink,8);
     circle(-9,-37,2,ink);circle(9,-37,2,ink);line(-6,-24,6,-24,ink,2);
@@ -128,47 +132,11 @@
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
     const miniKey=training?(s.lastAction||exp):null;
-    const t=anim;
-    const skin='#efb58f';
-    const drawMiniHuman=function(key){
-      const wave=Math.sin(t*3.4), curl=(Math.sin(t*4)+1)/2;
-      const core=key==='core';
-      c.save();
-      if(core){ c.translate(0,9); c.rotate(-0.72+wave*0.12); }
-      circle(0,-27,8,skin); box(-9,-18,18,26,skin,5); box(-9,2,18,6,green,2);
-      circle(-2.5,-28,1.1,ink); circle(2.5,-28,1.1,ink); line(-5,-34,5,-34,ink,2.5);
-      if(key==='chest'){
-        const open=(wave+1)/2, spread=7+open*9;
-        line(-8,-11,-13-spread,-2,skin,4); line(8,-11,13+spread,-2,skin,4);
-        circle(-13-spread,-2,2.5,skin); circle(13+spread,-2,2.5,skin);
-      } else if(key==='arms'){
-        line(-8,-11,-13,-2,skin,4); line(8,-11,13,-2,skin,4);
-        line(-13,-2,-13,-14-curl*7,skin,4); line(13,-2,13,-14-(1-curl)*7,skin,4);
-        circle(-13,-17-curl*7,2.5,'#59636d'); circle(13,-17-(1-curl)*7,2.5,'#59636d');
-      } else if(core){
-        line(-7,-12,-12,-19,skin,4); line(7,-12,12,-19,skin,4);
-        line(-12,-19,-15,-16,ink,2); line(12,-19,15,-16,ink,2);
-      } else if(key==='water'){
-        line(8,-11,14,-3,skin,4); line(14,-3,18,-11,skin,4); circle(19,-15,4,'#8bd7ee');
-        line(-8,-11,-12,1,skin,4);
-      } else if(key==='protein'){
-        line(-8,-11,-13,-3,skin,4); line(-13,-3,-8,-11,skin,4);
-        line(8,-11,14,-3,skin,4); line(14,-3,18,-10,skin,4); box(16,-17,7,12,'#f1c36e',2);
-      } else {
-        line(-8,-11,-13,2,skin,4); line(8,-11,13,2,skin,4);
-      }
-      if(core){
-        line(-5,8,-11,14,skin,4); line(-11,14,-17,18,skin,4); line(5,8,11,14,skin,4); line(11,14,17,18,skin,4);
-        line(-17,18,-21,18,ink,3); line(17,18,21,18,ink,3);
-      } else {
-        const step=key==='legs'?Math.sin(t*4)*3:0;
-        line(-4,8,-6-step,24,skin,4); line(4,8,6+step,24,skin,4);
-        line(-6-step,24,-10-step,24,ink,3); line(6+step,24,10+step,24,ink,3);
-      }
-      c.restore();
-    };
-    if(miniKey==='sleep') { drawMiniHuman('idle'); text('Z z',23,-25,9,green,'center'); }
-    else drawMiniHuman(miniKey);
+    if(miniKey==='core') { c.translate(0,10); c.rotate(-0.72+Math.sin(anim*3.2)*0.12); }
+    body(0,0,'thin',0.8,null,true,false,miniKey==='chest'||miniKey==='arms'?miniKey:null);
+    if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
+    if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+    if(miniKey==='sleep') text('Z z',28,-20,14,green,'center');
     c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); }
     const ready=s.elapsed-s.lastTap>=0.45;
