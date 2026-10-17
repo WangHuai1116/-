@@ -138,7 +138,7 @@
     }
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
-    const miniKey=training?(s.lastAction||exp):null;
+    const miniKey=training?exp:null;
     if(miniKey==='core') { c.translate(0,18); c.rotate(-Math.PI/2+Math.sin(anim*3.2)*0.10); }
     body(0,0,'thin',0.8,null,true,false,(miniKey==='chest'||miniKey==='arms'||miniKey==='core')?miniKey:null);
     if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
