@@ -149,7 +149,7 @@
     else {
       if(miniKey==='core') {
         // 正面仰卧：深色垫子固定在身后，躯干只做上下卷腹。
-        c.fillStyle='#53645f'; c.fillRect(-50,18,100,13);
+        c.fillStyle='#53645f'; c.fillRect(-24,-48,48,104);
         const crunch=(Math.sin(anim*3.2)+1)/2;
         c.translate(0,8-crunch*7);
         c.rotate(-0.75+crunch*0.95);
