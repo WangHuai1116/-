@@ -32,9 +32,10 @@
     const armW=kind==='thin'?15:23;
     let corePoseSaved=false;
     if(pose==='core'){
-      line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
-      line(21,102,46,132,skin,25); line(46,132,28,166,skin,25);
-      line(-28,166,-40,170,ink,16); line(28,166,40,170,ink,16);
+      // 仰卧起坐的正面屈膝：大腿水平抬起，小腿垂直向下，形成直角。
+      line(-21,102,-52,102,skin,25); line(-52,102,-52,166,skin,25);
+      line(21,102,52,102,skin,25); line(52,102,52,166,skin,25);
+      line(-52,166,-64,166,ink,16); line(52,166,64,166,ink,16);
     } else if(pose==='legs'){
       const bend=Math.max(0,Math.sin(anim*3.2));
       line(-21,102,-43,130+bend*8,skin,25); line(-43,130+bend*8,-27,169+bend*5,skin,25);
