@@ -38,15 +38,15 @@
       line(-52,166,-64,166,ink,16); line(52,166,64,166,ink,16);
     } else if(pose==='legs'){
       const bend=Math.max(0,Math.sin(anim*3.2));
-      line(-21,102,-43,130+bend*8,skin,25); line(-43,130+bend*8,-27,169+bend*5,skin,25);
-      line(21,102,43,130+bend*8,skin,25); line(43,130+bend*8,27,169+bend*5,skin,25);
+      line(-21,102,-48,130+bend*16,skin,25); line(-48,130+bend*16,-27,169+bend*10,skin,25);
+      line(21,102,48,130+bend*16,skin,25); line(48,130+bend*16,27,169+bend*10,skin,25);
       line(-27,174,-41,174,ink,16); line(27,174,41,174,ink,16);
     } else {
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
       line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
     }
     if(pose==='core') { const fold=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-fold*30); c.scale(1,0.72+fold*0.18); c.translate(0,-105); corePoseSaved=true; }
-    else if(pose==='legs') { const squat=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-squat*18); c.scale(1,0.88+squat*0.12); c.translate(0,-105); corePoseSaved=true; }
+    else if(pose==='legs') { const squat=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-squat*30); c.scale(1,0.78+squat*0.22); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
     else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); }
     else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
@@ -157,7 +157,6 @@
         c.fillStyle='#53645f'; c.fillRect(-24,-48,48,104);
         const crunch=(Math.sin(anim*3.2)+1)/2;
         body(0,0,'thin',0.8,null,true,false,'core');
-        c.fillStyle='#efb58f'; c.beginPath(); c.ellipse(0,-38,8,3,0,Math.PI,Math.PI*2); c.fill();
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
         body(0,0,'thin',0.8,null,true,false,null);
