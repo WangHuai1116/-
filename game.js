@@ -14,7 +14,7 @@
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
   let state = null, confirmHome = false, hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
-  let floatX = 340, floatY = 0, touchStart = null, touchMoved = false;
+  let floatX = 340, floatY = 0, touchStart = null, touchMoved = false, swipeHandled = false;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
   function box(x,y,w,h,color,r) { c.fillStyle=color; c.beginPath(); const radius=Math.min(r || 16,w/2,h/2); c.moveTo(x+radius,y); c.arcTo(x+w,y,x+w,y+h,radius); c.arcTo(x+w,y+h,x,y+h,radius); c.arcTo(x,y+h,x,y,radius); c.arcTo(x,y,x+w,y,radius); c.fill(); }
@@ -182,16 +182,16 @@
     if(!touchStart||!p)return;
     if(touchMoved && state&&state.phase==='walk'){const dx=p.x-touchStart.x;if(Math.abs(dx)>24) tap(dx<0?touchStart.x-100:touchStart.x+100,touchStart.y);}
     else if(!touchMoved) tap(touchStart.x,touchStart.y);
-    touchStart=null; touchMoved=false;
+    touchStart=null; touchMoved=false; swipeHandled=false;
   }
   if(native) {
     tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
-    if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;tap(dx<0?touchStart.x-100:touchStart.x+100);return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     if(tt.onTouchEnd) tt.onTouchEnd(function(e){const t=(e.changedTouches&&e.changedTouches[0])||(e.touches&&e.touches[0]);finishTouch(canvasPoint(t));});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
-    canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
+    canvas.addEventListener('pointermove',function(e){if(!touchStart)return;const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(state&&state.phase==='walk'&&!swipeHandled&&Math.abs(dx)>24&&Math.abs(dx)>Math.abs(dy)){swipeHandled=true;tap(dx<0?touchStart.x-100:touchStart.x+100);return;}if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
     canvas.addEventListener('pointerup',function(e){const r=canvas.getBoundingClientRect();finishTouch({x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height});});
     document.addEventListener('visibilitychange',function(){paused=document.hidden;last=0;});
   }
