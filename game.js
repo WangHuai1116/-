@@ -44,9 +44,9 @@
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
       line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
     }
-    if(pose==='core') { const fold=0.15+((Math.sin(anim*3.2)+1)/2)*0.85; c.save(); c.translate(0,105); c.rotate(-fold); c.translate(0,-105); corePoseSaved=true; }
+    if(pose==='core') { const fold=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-fold*30); c.scale(1,0.72+fold*0.18); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
-    else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); line(-broad-21,ly,-broad-7,ly,'#59636d',5); line(broad+7,ry,broad+21,ry,'#59636d',5); circle(-broad-14,ly,7,'#59636d'); circle(broad+14,ry,7,'#59636d'); }
+    else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); line(-broad-27,ly,-broad-2,ly,'#59636d',7); line(broad+2,ry,broad+27,ry,'#59636d',7); circle(-broad-14,ly,12,'#59636d'); circle(broad+14,ry,12,'#59636d'); }
     else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
     else line(-broad+4,9,-broad-14,77,skin,armW);
     if(!pose || (pose!=='chest' && pose!=='arms' && pose!=='core')) line(broad-4,9,broad+14,77,skin,armW);
