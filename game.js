@@ -162,6 +162,12 @@
         body(0,0,'thin',0.8,null,true,false,null);
       } else {
         body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs')?miniKey:null);
+        if(miniKey==='arms') {
+          const curl=(Math.sin(anim*4)+1)/2;
+          const ly=-2-curl*9, ry=-2-(1-curl)*9;
+          line(-27,ly,-15,ly,'#59636d',4); line(15,ry,27,ry,'#59636d',4);
+          circle(-29,ly,7,'#59636d'); circle(29,ry,7,'#59636d');
+        }
         if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
         if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
       }
