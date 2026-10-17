@@ -28,7 +28,7 @@
     const skin='#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
     c.translate(0,bounce);
-    if(pose==='legs') c.translate(0,Math.max(0,Math.sin(anim*3.2))*18);
+    // 深蹲以脚底为支点，脚掌位置保持不动。
     const armW=kind==='thin'?15:23;
     if(pose==='core'){
       line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
@@ -38,7 +38,7 @@
       const bend=Math.max(0,Math.sin(anim*3.2));
       line(-21,102,-43,130+bend*8,skin,25); line(-43,130+bend*8,-27,169+bend*5,skin,25);
       line(21,102,43,130+bend*8,skin,25); line(43,130+bend*8,27,169+bend*5,skin,25);
-      line(-27,169+bend*5,-41,169+bend*5,ink,16); line(27,169+bend*5,41,169+bend*5,ink,16);
+      line(-27,174,-41,174,ink,16); line(27,174,41,174,ink,16);
     } else {
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
       line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
@@ -151,8 +151,8 @@
         // 正面仰卧：深色垫子固定在身后，躯干只做上下卷腹。
         c.fillStyle='#53645f'; c.fillRect(-24,-48,48,104);
         const crunch=(Math.sin(anim*3.2)+1)/2;
-        c.translate(0,8-crunch*7);
-        c.rotate(-0.75+crunch*0.95);
+        c.translate(0,4-crunch*5);
+        c.rotate(-0.18+crunch*0.42);
         body(0,0,'thin',0.8,null,true,false,'core');
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
