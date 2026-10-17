@@ -31,7 +31,7 @@
     // 深蹲以脚底为支点，脚掌位置保持不动。
     const armW=kind==='thin'?15:23;
     let corePoseSaved=false;
-    if(pose==='core'){
+    if(pose==='core_squat_disabled'){
       line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
       line(21,102,46,132,skin,25); line(46,132,28,166,skin,25);
       line(-28,166,-40,170,ink,16); line(28,166,40,170,ink,16);
@@ -155,6 +155,7 @@
         c.fillStyle='#53645f'; c.fillRect(-24,-48,48,104);
         const crunch=(Math.sin(anim*3.2)+1)/2;
         body(0,0,'thin',0.8,null,true,false,'core');
+        c.fillStyle='#efb58f'; c.beginPath(); c.ellipse(0,-38,8,3,0,Math.PI,Math.PI*2); c.fill();
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
         line(-35,10,35,10,'#59636d',4); line(-31,3,-31,17,'#59636d',3); line(31,3,31,17,'#59636d',3);
