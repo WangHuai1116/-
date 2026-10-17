@@ -149,13 +149,15 @@
     else {
       if(miniKey==='core') {
         // 正面仰卧：深色垫子固定在身后，躯干只做上下卷腹。
-        c.fillStyle='#53645f'; c.fillRect(-43,19,86,10);
-        c.translate(0,-4+Math.sin(anim*3.2)*5);
+        c.fillStyle='#53645f'; c.fillRect(-50,18,100,13);
+        const crunch=(Math.sin(anim*3.2)+1)/2;
+        c.translate(0,8-crunch*7);
+        c.rotate(-0.75+crunch*0.95);
         body(0,0,'thin',0.8,null,true,false,'core');
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
-        line(-35,-4,35,-4,'#59636d',4); line(-31,-11,-31,3,'#59636d',3); line(31,-11,31,3,'#59636d',3);
-        circle(-35,-4,7,'#59636d'); circle(35,-4,7,'#59636d');
+        line(-35,30,35,30,'#59636d',4); line(-31,23,-31,37,'#59636d',3); line(31,23,31,37,'#59636d',3);
+        circle(-35,30,7,'#59636d'); circle(35,30,7,'#59636d',3);
         body(0,0,'thin',0.8,null,true,false,null);
       } else {
         body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs')?miniKey:null);
