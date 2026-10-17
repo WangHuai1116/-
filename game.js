@@ -30,6 +30,7 @@
     c.translate(0,bounce);
     // 深蹲以脚底为支点，脚掌位置保持不动。
     const armW=kind==='thin'?15:23;
+    let corePoseSaved=false;
     if(pose==='core'){
       line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
       line(21,102,46,132,skin,25); line(46,132,28,166,skin,25);
@@ -43,6 +44,7 @@
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
       line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
     }
+    if(pose==='core') { const fold=0.15+((Math.sin(anim*3.2)+1)/2)*0.85; c.save(); c.translate(0,105); c.rotate(-fold); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
     else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); line(-broad-21,ly,-broad-7,ly,'#59636d',5); line(broad+7,ry,broad+21,ry,'#59636d',5); circle(-broad-14,ly,7,'#59636d'); circle(broad+14,ry,7,'#59636d'); }
     else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
@@ -57,6 +59,7 @@
       const map={chest:[0,24,37],arms:[-broad-8,47,22],core:[0,70,27],legs:[0,143,37]};
       if(map[focus]) { const p=map[focus];c.strokeStyle=lime;c.lineWidth=5;c.beginPath();c.arc(p[0],p[1],p[2]+Math.sin(anim*5)*3,0,Math.PI*2);c.stroke(); }
     }
+    if(corePoseSaved) c.restore();
     c.restore();
   }
   let swipeAudio=null;
@@ -151,8 +154,6 @@
         // 正面仰卧：深色垫子固定在身后，躯干只做上下卷腹。
         c.fillStyle='#53645f'; c.fillRect(-24,-48,48,104);
         const crunch=(Math.sin(anim*3.2)+1)/2;
-        c.translate(0,4-crunch*5);
-        c.rotate(-0.18+crunch*0.42);
         body(0,0,'thin',0.8,null,true,false,'core');
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
