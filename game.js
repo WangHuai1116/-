@@ -29,12 +29,19 @@
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
     c.translate(0,bounce);
     const armW=kind==='thin'?15:23;
-    line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
-    line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
+    if(pose==='core'){
+      line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
+      line(21,102,46,132,skin,25); line(46,132,28,166,skin,25);
+      line(-28,166,-40,170,ink,16); line(28,166,40,170,ink,16);
+    } else {
+      line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
+      line(-25,174,-35,177,ink,16);line(25,174,35,177,ink,16);
+    }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
     else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; line(-broad+4,9,-broad-14,35-curl*28,skin,armW); line(broad-4,9,broad+14,35-(1-curl)*28,skin,armW); }
+    else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
     else line(-broad+4,9,-broad-14,77,skin,armW);
-    if(!pose || (pose!=='chest' && pose!=='arms')) line(broad-4,9,broad+14,77,skin,armW);
+    if(!pose || (pose!=='chest' && pose!=='arms' && pose!=='core')) line(broad-4,9,broad+14,77,skin,armW);
     box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,green,9);
     circle(0,-36,27,skin);box(-26,-61,52,18,ink,8);
     circle(-9,-37,2,ink);circle(9,-37,2,ink);line(-6,-24,6,-24,ink,2);
@@ -132,8 +139,8 @@
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
     const miniKey=training?(s.lastAction||exp):null;
-    if(miniKey==='core') { c.translate(0,10); c.rotate(-0.72+Math.sin(anim*3.2)*0.12); }
-    body(0,0,'thin',0.8,null,true,false,miniKey==='chest'||miniKey==='arms'?miniKey:null);
+    if(miniKey==='core') { c.translate(0,18); c.rotate(-Math.PI/2+Math.sin(anim*3.2)*0.10); }
+    body(0,0,'thin',0.8,null,true,false,(miniKey==='chest'||miniKey==='arms'||miniKey==='core')?miniKey:null);
     if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
     if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
     if(miniKey==='sleep') text('Z z',28,-20,14,green,'center');
