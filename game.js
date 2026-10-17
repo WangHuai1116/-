@@ -130,8 +130,7 @@
     const miniKey=training?(s.lastAction||exp):null;
     const phase=(Math.sin(anim*4)+1)/2;
     // 训练小窗沿用主角模型，只改变关节角度和身体姿态。
-    if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
-    else {
+    { /* 所有状态都保留完整小人，睡觉只额外显示提示符。 */
       const squash=miniKey==='core' ? Math.sin(anim*3.2)*0.18 : 0;
       c.translate(0, miniKey==='core' ? 7 : 0);
       c.rotate(squash);
@@ -141,6 +140,7 @@
       circle(0,-27+bob,9,skin); box(-10,-18+bob,20,29,skin,6); box(-10,3+bob,20,7,shirt,2);
       circle(-3,-28+bob,1.2,ink); circle(3,-28+bob,1.2,ink);
       line(-6,-35+bob,6,-35+bob,ink,3);
+      if(miniKey==='sleep') { text('Z z',23,-25,9,green,'center'); }
       // 默认姿态先画完整的下垂手臂，特殊动作再覆盖前臂轨迹。
       if(miniKey!=='chest' && miniKey!=='arms' && miniKey!=='core') {
         line(-9,-12+bob,-14,2+bob,skin,4); line(9,-12+bob,14,2+bob,skin,4);
@@ -164,12 +164,18 @@
       } else if(miniKey==='legs') {
         const step=Math.sin(anim*4)*7;
         line(-12,35,-20,48+step,ink,4); line(12,35,20,48-step,ink,4);
-      } else if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
-      else if(miniKey==='protein'){box(12,-10,8,14,'#f1c36e',3);line(12,-10,20,-10,'#fff',1);}
+      } else if(miniKey==='water'){line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);circle(20,-14+bob,5,'#8bd7ee');line(17,-10+bob,22,-10+bob,'#8bd7ee',2);}
+      else if(miniKey==='protein'){line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);box(17,-17+bob,7,12,'#f1c36e',3);line(17,-17+bob,24,-17+bob,'#fff',1);}
       // 双腿始终连接到躯干底部，随动作轻微交替。
       const step=miniKey==='legs'?Math.sin(anim*4)*3:0;
-      line(-5,10+bob,-7-step,25,'#efb58f',4); line(5,10+bob,7+step,25,'#efb58f',4);
-      line(-7-step,25,-11-step,25,ink,3); line(7+step,25,11+step,25,ink,3);
+      if(miniKey==='core') {
+        line(-5,10+bob,-10,17,'#efb58f',4); line(-10,17,-15,23,'#efb58f',4);
+        line(5,10+bob,10,17,'#efb58f',4); line(10,17,15,23,'#efb58f',4);
+        line(-15,23,-19,23,ink,3); line(15,23,19,23,ink,3);
+      } else {
+        line(-5,10+bob,-7-step,25,'#efb58f',4); line(5,10+bob,7+step,25,'#efb58f',4);
+        line(-7-step,25,-11-step,25,ink,3); line(7+step,25,11+step,25,ink,3);
+      }
     }
     c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); } 
