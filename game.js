@@ -135,27 +135,36 @@
       const squash=miniKey==='core' ? Math.sin(anim*3.2)*0.18 : 0;
       c.translate(0, miniKey==='core' ? 7 : 0);
       c.rotate(squash);
-      body(0,0,'thin',0.8,null,true);
+      // 小窗使用独立的紧凑比例，所有关节共用同一坐标系，避免动作肢体脱节。
+      const skin='#efb58f', shirt=green;
+      const bob=miniKey==='core' ? Math.sin(anim*3.2)*2 : 0;
+      circle(0,-27+bob,9,skin); box(-10,-18+bob,20,29,skin,6); box(-10,3+bob,20,7,shirt,2);
+      circle(-3,-28+bob,1.2,ink); circle(3,-28+bob,1.2,ink);
+      line(-6,-35+bob,6,-35+bob,ink,3);
       if(miniKey==='chest') {
         // 双臂由身体两侧抬到胸前，再缓慢打开，模拟 GIF 的开合动作。
         const open=Math.sin(anim*3.5), reach=18+Math.max(0,open)*16;
-        line(-22,3,-30-reach,18,'#efb58f',6); line(22,3,30+reach,18,'#efb58f',6);
-        circle(-31-reach,19,4,'#efb58f'); circle(31+reach,19,4,'#efb58f');
+        line(-9,-12+bob,-15-reach*0.35,2+bob,'#efb58f',4); line(9,-12+bob,15+reach*0.35,2+bob,'#efb58f',4);
+        circle(-15-reach*0.35,3+bob,3,'#efb58f'); circle(15+reach*0.35,3+bob,3,'#efb58f');
       } else if(miniKey==='arms') {
         // 哑铃弯举：上臂固定，前臂交替向肩部收起。
         const curl=(Math.sin(anim*4)+1)/2;
-        line(-23,5,-32,18-curl*18,'#efb58f',6); line(23,5,32,18-(1-curl)*18,'#efb58f',6);
-        circle(-33,18-curl*18,5,'#59636d'); circle(33,18-(1-curl)*18,5,'#59636d');
+        line(-9,-10+bob,-14,-1-curl*11+bob,'#efb58f',4); line(9,-10+bob,14,-1-(1-curl)*11+bob,'#efb58f',4);
+        circle(-14,-2-curl*11+bob,3,'#59636d'); circle(14,-2-(1-curl)*11+bob,3,'#59636d');
       } else if(miniKey==='core') {
         // 卷腹：身体前后小幅收起，双手托在头侧。
         const bend=Math.sin(anim*3.2)*8;
-        line(-18,-16,-28+bend,-25,'#efb58f',5); line(18,-16,28+bend,-25,'#efb58f',5);
-        line(-28+bend,-25,-32+bend,-22,ink,3); line(28+bend,-25,32+bend,-22,ink,3);
+        line(-8,-10+bob,-14+bend*0.35,-17+bob,'#efb58f',4); line(8,-10+bob,14+bend*0.35,-17+bob,'#efb58f',4);
+        line(-14+bend*0.35,-17+bob,-17+bend*0.35,-14+bob,ink,2); line(14+bend*0.35,-17+bob,17+bend*0.35,-14+bob,ink,2);
       } else if(miniKey==='legs') {
         const step=Math.sin(anim*4)*7;
         line(-12,35,-20,48+step,ink,4); line(12,35,20,48-step,ink,4);
       } else if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
-      else if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+      else if(miniKey==='protein'){box(12,-10,8,14,'#f1c36e',3);line(12,-10,20,-10,'#fff',1);}
+      // 双腿始终连接到躯干底部，随动作轻微交替。
+      const step=miniKey==='legs'?Math.sin(anim*4)*3:0;
+      line(-5,10+bob,-7-step,25,'#efb58f',4); line(5,10+bob,7+step,25,'#efb58f',4);
+      line(-7-step,25,-11-step,25,ink,3); line(7+step,25,11+step,25,ink,3);
     }
     c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); } 
