@@ -31,7 +31,7 @@
     // 深蹲以脚底为支点，脚掌位置保持不动。
     const armW=kind==='thin'?15:23;
     let corePoseSaved=false;
-    if(pose==='core_squat_disabled'){
+    if(pose==='core'){
       line(-21,102,-46,132,skin,25); line(-46,132,-28,166,skin,25);
       line(21,102,46,132,skin,25); line(46,132,28,166,skin,25);
       line(-28,166,-40,170,ink,16); line(28,166,40,170,ink,16);
