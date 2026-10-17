@@ -147,10 +147,21 @@
     const miniKey=training?exp:null;
     if(miniKey==='sleep') { c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center'); }
     else {
-      if(miniKey==='core') { c.translate(0,24); c.rotate(-Math.PI/2+((Math.sin(anim*3.2)+1)/2)*0.72); }
-      body(0,0,'thin',0.8,null,true,false,(miniKey==='chest'||miniKey==='arms'||miniKey==='core'||miniKey==='legs')?miniKey:null);
-      if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
-      if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+      if(miniKey==='core') {
+        // 正面仰卧：深色垫子固定在身后，躯干只做上下卷腹。
+        c.fillStyle='#53645f'; c.fillRect(-43,19,86,10);
+        c.translate(0,-4+Math.sin(anim*3.2)*5);
+        body(0,0,'thin',0.8,null,true,false,'core');
+      } else if(miniKey==='chest') {
+        // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
+        line(-35,-4,35,-4,'#59636d',4); line(-31,-11,-31,3,'#59636d',3); line(31,-11,31,3,'#59636d',3);
+        circle(-35,-4,7,'#59636d'); circle(35,-4,7,'#59636d');
+        body(0,0,'thin',0.8,null,true,false,null);
+      } else {
+        body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs')?miniKey:null);
+        if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
+        if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+      }
     }
     c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); }
