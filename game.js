@@ -38,8 +38,8 @@
       line(-52,166,-64,166,ink,16); line(52,166,64,166,ink,16);
     } else if(pose==='legs'){
       const bend=Math.max(0,Math.sin(anim*3.2));
-      line(-21,102,-42,136+bend*10,skin,25); line(-42,136+bend*10,-27,174,skin,25);
-      line(21,102,42,136+bend*10,skin,25); line(42,136+bend*10,27,174,skin,25);
+      line(-21,102,-48,136+bend*28,skin,25); line(-48,136+bend*28,-27,174,skin,25);
+      line(21,102,48,136+bend*28,skin,25); line(48,136+bend*28,27,174,skin,25);
       line(-27,174,-41,174,ink,16); line(27,174,41,174,ink,16);
     } else {
       line(-21,102,-25,174,skin,25);line(21,102,25,174,skin,25);
