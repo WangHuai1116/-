@@ -128,57 +128,49 @@
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
     const miniKey=training?(s.lastAction||exp):null;
-    const phase=(Math.sin(anim*4)+1)/2;
-    // 训练小窗沿用主角模型，只改变关节角度和身体姿态。
-    { /* 所有状态都保留完整小人，睡觉只额外显示提示符。 */
-      const squash=miniKey==='core' ? -0.38 + Math.sin(anim*3.2)*0.22 : 0;
-      c.translate(0, miniKey==='core' ? 7 : 0);
-      c.rotate(squash);
-      // 小窗使用独立的紧凑比例，所有关节共用同一坐标系，避免动作肢体脱节。
-      const skin='#efb58f', shirt=green;
-      const bob=miniKey==='core' ? Math.sin(anim*3.2)*2 : 0;
-      circle(0,-27+bob,9,skin); box(-10,-18+bob,20,29,skin,6); box(-10,3+bob,20,7,shirt,2);
-      circle(-3,-28+bob,1.2,ink); circle(3,-28+bob,1.2,ink);
-      line(-6,-35+bob,6,-35+bob,ink,3);
-      if(miniKey==='sleep') { text('Z z',23,-25,9,green,'center'); }
-      // 默认姿态先画完整的下垂手臂，特殊动作再覆盖前臂轨迹。
-      if(miniKey!=='chest' && miniKey!=='arms' && miniKey!=='core' && miniKey!=='water' && miniKey!=='protein') {
-        line(-9,-12+bob,-14,2+bob,skin,4); line(9,-12+bob,14,2+bob,skin,4);
-        circle(-14,3+bob,2.5,skin); circle(14,3+bob,2.5,skin);
-      }
-      if(miniKey==='chest') {
-        // 双臂由身体两侧抬到胸前，再缓慢打开，模拟 GIF 的开合动作。
-        const open=Math.sin(anim*3.5), reach=18+Math.max(0,open)*16;
-        line(-9,-12+bob,-15-reach*0.35,2+bob,'#efb58f',4); line(9,-12+bob,15+reach*0.35,2+bob,'#efb58f',4);
-        circle(-15-reach*0.35,3+bob,3,'#efb58f'); circle(15+reach*0.35,3+bob,3,'#efb58f');
-      } else if(miniKey==='arms') {
-        // 哑铃弯举：上臂固定，前臂交替向肩部收起。
-        const curl=(Math.sin(anim*4)+1)/2;
-        line(-9,-10+bob,-14,-1-curl*11+bob,'#efb58f',4); line(9,-10+bob,14,-1-(1-curl)*11+bob,'#efb58f',4);
-        circle(-14,-2-curl*11+bob,3,'#59636d'); circle(14,-2-(1-curl)*11+bob,3,'#59636d');
-      } else if(miniKey==='core') {
-        // 卷腹：身体前后小幅收起，双手托在头侧。
-        const bend=Math.sin(anim*3.2)*8;
-        line(-8,-10+bob,-14+bend*0.35,-17+bob,'#efb58f',4); line(8,-10+bob,14+bend*0.35,-17+bob,'#efb58f',4);
-        line(-14+bend*0.35,-17+bob,-17+bend*0.35,-14+bob,ink,2); line(14+bend*0.35,-17+bob,17+bend*0.35,-14+bob,ink,2);
-      } else if(miniKey==='legs') {
-        const step=Math.sin(anim*4)*7;
-        line(-12,35,-20,48+step,ink,4); line(12,35,20,48-step,ink,4);
-      } else if(miniKey==='water'){line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);circle(20,-14+bob,5,'#8bd7ee');line(17,-10+bob,22,-10+bob,'#8bd7ee',2);}
-      else if(miniKey==='protein'){line(-9,-10+bob,-14,-3+bob,skin,4);line(-14,-3+bob,-7,-10+bob,skin,4);line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);box(17,-17+bob,7,12,'#f1c36e',3);line(17,-17+bob,24,-17+bob,'#fff',1);}
-      // 双腿始终连接到躯干底部，随动作轻微交替。
-      const step=miniKey==='legs'?Math.sin(anim*4)*3:0;
-      if(miniKey==='core') {
-        line(-5,10+bob,-10,17,'#efb58f',4); line(-10,17,-15,23,'#efb58f',4);
-        line(5,10+bob,10,17,'#efb58f',4); line(10,17,15,23,'#efb58f',4);
-        line(-15,23,-19,23,ink,3); line(15,23,19,23,ink,3);
+    const t=anim;
+    const skin='#efb58f';
+    const drawMiniHuman=function(key){
+      const wave=Math.sin(t*3.4), curl=(Math.sin(t*4)+1)/2;
+      const core=key==='core';
+      c.save();
+      if(core){ c.translate(0,9); c.rotate(-0.72+wave*0.12); }
+      circle(0,-27,8,skin); box(-9,-18,18,26,skin,5); box(-9,2,18,6,green,2);
+      circle(-2.5,-28,1.1,ink); circle(2.5,-28,1.1,ink); line(-5,-34,5,-34,ink,2.5);
+      if(key==='chest'){
+        const open=(wave+1)/2, spread=7+open*9;
+        line(-8,-11,-13-spread,-2,skin,4); line(8,-11,13+spread,-2,skin,4);
+        circle(-13-spread,-2,2.5,skin); circle(13+spread,-2,2.5,skin);
+      } else if(key==='arms'){
+        line(-8,-11,-13,-2,skin,4); line(8,-11,13,-2,skin,4);
+        line(-13,-2,-13,-14-curl*7,skin,4); line(13,-2,13,-14-(1-curl)*7,skin,4);
+        circle(-13,-17-curl*7,2.5,'#59636d'); circle(13,-17-(1-curl)*7,2.5,'#59636d');
+      } else if(core){
+        line(-7,-12,-12,-19,skin,4); line(7,-12,12,-19,skin,4);
+        line(-12,-19,-15,-16,ink,2); line(12,-19,15,-16,ink,2);
+      } else if(key==='water'){
+        line(8,-11,14,-3,skin,4); line(14,-3,18,-11,skin,4); circle(19,-15,4,'#8bd7ee');
+        line(-8,-11,-12,1,skin,4);
+      } else if(key==='protein'){
+        line(-8,-11,-13,-3,skin,4); line(-13,-3,-8,-11,skin,4);
+        line(8,-11,14,-3,skin,4); line(14,-3,18,-10,skin,4); box(16,-17,7,12,'#f1c36e',2);
       } else {
-        line(-5,10+bob,-7-step,25,'#efb58f',4); line(5,10+bob,7+step,25,'#efb58f',4);
-        line(-7-step,25,-11-step,25,ink,3); line(7+step,25,11+step,25,ink,3);
+        line(-8,-11,-13,2,skin,4); line(8,-11,13,2,skin,4);
       }
-    }
+      if(core){
+        line(-5,8,-11,14,skin,4); line(-11,14,-17,18,skin,4); line(5,8,11,14,skin,4); line(11,14,17,18,skin,4);
+        line(-17,18,-21,18,ink,3); line(17,18,21,18,ink,3);
+      } else {
+        const step=key==='legs'?Math.sin(t*4)*3:0;
+        line(-4,8,-6-step,24,skin,4); line(4,8,6+step,24,skin,4);
+        line(-6-step,24,-10-step,24,ink,3); line(6+step,24,10+step,24,ink,3);
+      }
+      c.restore();
+    };
+    if(miniKey==='sleep') { drawMiniHuman('idle'); text('Z z',23,-25,9,green,'center'); }
+    else drawMiniHuman(miniKey);
     c.restore();
-    text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); } 
+    text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); }
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
