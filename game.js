@@ -86,7 +86,7 @@
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
       line(195,top+180,195,top+500,'#c2d9bc',3);
-      (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const yy=top+470-d*9,xx=o.lane===0?145:245;box(xx-22,yy-14,44,28,o.type==='栅栏'?'#b86f45':'#e6d34f',8);text(o.type==='栅栏'?'栏':'皮',xx,yy,13,'#fff','center');}});
+      (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const t=1-d/28,yy=top+190+t*280,xx=o.lane===0?145:245,sc=0.45+t*0.7;c.save();c.translate(xx,yy);c.scale(sc,sc);if(o.type==='栅栏'){box(-28,-18,56,8,'#8b572f',3);box(-25,-10,6,31,'#9d673b',2);box(19,-10,6,31,'#9d673b',2);line(-19,0,19,0,'#d59a58',4);line(-19,10,19,10,'#d59a58',4);}else{c.strokeStyle='#d9a928';c.lineWidth=8;c.lineCap='round';c.beginPath();c.arc(0,0,17,0.2,Math.PI*1.7);c.stroke();c.strokeStyle='#a97920';c.lineWidth=3;c.beginPath();c.moveTo(-10,-8);c.lineTo(10,8);c.stroke();}c.restore();}});
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       c.save();c.translate(115,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
@@ -187,7 +187,7 @@
   if(native) {
     tt.onTouchStart(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!p)return;if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
     if(tt.onTouchMove) tt.onTouchMove(function(e){const p=canvasPoint(e.touches&&e.touches[0]);if(!touchStart||!p)return;const dx=p.x-touchStart.x,dy=p.y-touchStart.y;if(!touchMoved&&Math.hypot(dx,dy)>8)touchMoved=true;if(touchMoved){floatX=Math.max(34,Math.min(W-34,p.x));floatY=Math.max(70,Math.min(H-70,p.y));draw();}});
-    if(tt.onTouchEnd) tt.onTouchEnd(function(e){finishTouch(canvasPoint(e.changedTouches&&e.changedTouches[0]));});
+    if(tt.onTouchEnd) tt.onTouchEnd(function(e){const t=(e.changedTouches&&e.changedTouches[0])||(e.touches&&e.touches[0]);finishTouch(canvasPoint(t));});
     tt.onHide(function(){hiddenAt=Date.now();paused=true;});tt.onShow(function(){if(hiddenAt&&state){E.tick(state,Math.min(60,(Date.now()-hiddenAt)/1000));}hiddenAt=0;paused=false;last=Date.now();draw();});
   } else {
     canvas.addEventListener('pointerdown',function(e){const r=canvas.getBoundingClientRect();const p={x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};if(floatingHit(p)){touchStart=p;touchMoved=false;}else if(state&&state.phase==='walk'){touchStart=p;touchMoved=false;}else tap(p.x,p.y);});
