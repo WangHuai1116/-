@@ -49,7 +49,7 @@
     else if(pose==='legs') { const squat=(Math.sin(anim*3.2)+1)/2; c.save(); c.translate(0,105-squat*20); c.scale(1,0.86+squat*0.14); c.translate(0,-105); corePoseSaved=true; }
     if(pose==='chest'){ const open=(Math.sin(anim*3.4)+1)/2; const reach=28+open*42; line(-broad+4,9,-reach,42,skin,armW); line(broad-4,9,reach,42,skin,armW); }
     else if(pose==='arms'){ const curl=(Math.sin(anim*4)+1)/2; const ly=35-curl*28, ry=35-(1-curl)*28; line(-broad+4,9,-broad-14,ly,skin,armW); line(broad-4,9,broad+14,ry,skin,armW); }
-    else if(pose==='core'){ line(-broad+4,9,-broad-22,-17,skin,armW); line(broad-4,9,broad+22,-17,skin,armW); }
+    else if(pose==='core'){ line(-broad+4,9,-30,-34,skin,armW); line(broad-4,9,30,-34,skin,armW); }
     else line(-broad+4,9,-broad-14,77,skin,armW);
     if(!pose || (pose!=='chest' && pose!=='arms' && pose!=='core')) line(broad-4,9,broad+14,77,skin,armW);
     box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,green,9);
