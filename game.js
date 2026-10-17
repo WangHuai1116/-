@@ -141,6 +141,11 @@
       circle(0,-27+bob,9,skin); box(-10,-18+bob,20,29,skin,6); box(-10,3+bob,20,7,shirt,2);
       circle(-3,-28+bob,1.2,ink); circle(3,-28+bob,1.2,ink);
       line(-6,-35+bob,6,-35+bob,ink,3);
+      // 默认姿态先画完整的下垂手臂，特殊动作再覆盖前臂轨迹。
+      if(miniKey!=='chest' && miniKey!=='arms' && miniKey!=='core') {
+        line(-9,-12+bob,-14,2+bob,skin,4); line(9,-12+bob,14,2+bob,skin,4);
+        circle(-14,3+bob,2.5,skin); circle(14,3+bob,2.5,skin);
+      }
       if(miniKey==='chest') {
         // 双臂由身体两侧抬到胸前，再缓慢打开，模拟 GIF 的开合动作。
         const open=Math.sin(anim*3.5), reach=18+Math.max(0,open)*16;
