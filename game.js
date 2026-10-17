@@ -42,31 +42,6 @@
     }
     c.restore();
   }
-  // 训练动作 GIF：浏览器与抖音小游戏均使用同一组本地素材；加载失败时继续使用原有 Canvas 动画。
-  const exerciseGifs = {
-    chest: 'assets/exercise-chest.gif',
-    core: 'assets/exercise-core.gif',
-    arms: 'assets/exercise-arms.gif'
-  };
-  const exerciseImages = {};
-  Object.keys(exerciseGifs).forEach(function (key) {
-    try {
-      const image = native && typeof tt.createImage === 'function' ? tt.createImage() : new Image();
-      image.src = exerciseGifs[key];
-      exerciseImages[key] = image;
-    } catch (_) {}
-  });
-  function drawExerciseGif(key, x, y, w, h) {
-    const image = exerciseImages[key];
-    if (!image || !image.width || !image.height) return false;
-    c.save();
-    c.beginPath(); c.rect(x, y, w, h); c.clip();
-    const ratio = Math.min(w / image.width, h / image.height);
-    const dw = image.width * ratio, dh = image.height * ratio;
-    c.drawImage(image, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
-    c.restore();
-    return true;
-  }
   let swipeAudio=null;
   if(native && typeof tt.createInnerAudioContext==='function'){try{swipeAudio=tt.createInnerAudioContext();swipeAudio.src='assets/swipe.wav';swipeAudio.volume=0.65;}catch(_){} }
   function playSwipe(){try{if(swipeAudio){swipeAudio.stop();swipeAudio.play();}}catch(_){} }
@@ -152,12 +127,36 @@
     }
     if(s.phase!=='walk') { box(265,top+173,101,104,'#fff',14);text('训练小窗',315,top+190,11,'#758875','center');
     c.save();c.translate(314,top+223);
-    const miniKey=training?(s.lastAction||exp):null, motion=Math.sin(anim*7)*5;
-    const gifKey = miniKey==='chest' || miniKey==='core' || miniKey==='arms' ? miniKey : null;
-    const gifShown = gifKey && drawExerciseGif(gifKey, -43, -43, 86, 86);
-    if(gifShown) { /* GIF 已绘制，保持下方动作名称与布局不变。 */ }
-    else if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
-    else { const phase=Math.sin(anim*4),squat=miniKey==='legs'?(phase+1)/2:0;if(miniKey==='core'){c.translate(0,10);c.rotate(-Math.PI/2);body(0,0,'thin',0.8,null,true);line(-18,28,-30,43,'#efb58f',5);line(18,28,30,43,'#efb58f',5);}else {c.translate(0,squat*10);c.rotate(miniKey==='legs'?phase*0.08:0);body(0,0,'thin',0.8,null,true);if(miniKey==='legs'){line(-12,35,-20,49+squat*8,ink,4);line(12,35,20,49+squat*8,ink,4);}if(miniKey==='arms'){const curl=(phase+1)/2;line(-24,8,-34,20-curl*15,'#efb58f',5);line(24,8,34,20-curl*15,'#efb58f',5);circle(-35,17-curl*15,5,'#59636d');circle(35,17-curl*15,5,'#59636d');}} if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);} if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);} if(miniKey==='chest'||miniKey==='arms'){line(-24,motion-6,24,motion+6,ink,5);circle(-28,motion-7,7,'#8798a8');circle(28,motion+7,7,'#8798a8');} if(miniKey==='legs'){line(-12,35,-20,48+motion,ink,4);line(12,35,20,48-motion,ink,4);} }
+    const miniKey=training?(s.lastAction||exp):null;
+    const phase=(Math.sin(anim*4)+1)/2;
+    // 训练小窗沿用主角模型，只改变关节角度和身体姿态。
+    if(miniKey==='sleep'){c.fillStyle='#b9cce8';c.fillRect(-35,20,70,30);c.fillStyle='#fff';c.fillRect(-30,15,24,15);text('Z z',28,-20,14,green,'center');}
+    else {
+      const squash=miniKey==='core' ? Math.sin(anim*3.2)*0.18 : 0;
+      c.translate(0, miniKey==='core' ? 7 : 0);
+      c.rotate(squash);
+      body(0,0,'thin',0.8,null,true);
+      if(miniKey==='chest') {
+        // 双臂由身体两侧抬到胸前，再缓慢打开，模拟 GIF 的开合动作。
+        const open=Math.sin(anim*3.5), reach=18+Math.max(0,open)*16;
+        line(-22,3,-30-reach,18,'#efb58f',6); line(22,3,30+reach,18,'#efb58f',6);
+        circle(-31-reach,19,4,'#efb58f'); circle(31+reach,19,4,'#efb58f');
+      } else if(miniKey==='arms') {
+        // 哑铃弯举：上臂固定，前臂交替向肩部收起。
+        const curl=(Math.sin(anim*4)+1)/2;
+        line(-23,5,-32,18-curl*18,'#efb58f',6); line(23,5,32,18-(1-curl)*18,'#efb58f',6);
+        circle(-33,18-curl*18,5,'#59636d'); circle(33,18-(1-curl)*18,5,'#59636d');
+      } else if(miniKey==='core') {
+        // 卷腹：身体前后小幅收起，双手托在头侧。
+        const bend=Math.sin(anim*3.2)*8;
+        line(-18,-16,-28+bend,-25,'#efb58f',5); line(18,-16,28+bend,-25,'#efb58f',5);
+        line(-28+bend,-25,-32+bend,-22,ink,3); line(28+bend,-25,32+bend,-22,ink,3);
+      } else if(miniKey==='legs') {
+        const step=Math.sin(anim*4)*7;
+        line(-12,35,-20,48+step,ink,4); line(12,35,20,48-step,ink,4);
+      } else if(miniKey==='water'){circle(28,-12,8,'#8bd7ee');line(22,-5,27,8,'#8bd7ee',3);line(25,8,31,8,'#8bd7ee',3);}
+      else if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+    }
     c.restore();
     text(training?E.names[exp]:s.phase==='maintain'?'呼吸放松':'稳步向前',315,top+270,11,green,'center'); } 
     const ready=s.elapsed-s.lastTap>=0.45;
