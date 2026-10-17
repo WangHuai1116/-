@@ -160,8 +160,9 @@
       } else if(miniKey==='chest') {
         // 恢复原来的杠铃卧推预览：小人和杠铃保持正面朝向。
         body(0,0,'thin',0.8,null,true,false,null);
-        line(-35,10,35,10,'#59636d',4); line(-31,3,-31,17,'#59636d',3); line(31,3,31,17,'#59636d',3);
-        circle(-35,10,7,'#59636d'); circle(35,10,7,'#59636d');
+        const press=(Math.sin(anim*3.2)+1)/2, barY=4+press*13;
+        line(-35,barY,35,barY,'#59636d',4); line(-31,barY-7,-31,barY+7,'#59636d',3); line(31,barY-7,31,barY+7,'#59636d',3);
+        circle(-35,barY,7,'#59636d'); circle(35,barY,7,'#59636d');
       } else {
         body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs')?miniKey:null);
         if(miniKey==='arms') {
