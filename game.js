@@ -131,7 +131,7 @@
     const phase=(Math.sin(anim*4)+1)/2;
     // 训练小窗沿用主角模型，只改变关节角度和身体姿态。
     { /* 所有状态都保留完整小人，睡觉只额外显示提示符。 */
-      const squash=miniKey==='core' ? Math.sin(anim*3.2)*0.18 : 0;
+      const squash=miniKey==='core' ? -0.38 + Math.sin(anim*3.2)*0.22 : 0;
       c.translate(0, miniKey==='core' ? 7 : 0);
       c.rotate(squash);
       // 小窗使用独立的紧凑比例，所有关节共用同一坐标系，避免动作肢体脱节。
@@ -142,7 +142,7 @@
       line(-6,-35+bob,6,-35+bob,ink,3);
       if(miniKey==='sleep') { text('Z z',23,-25,9,green,'center'); }
       // 默认姿态先画完整的下垂手臂，特殊动作再覆盖前臂轨迹。
-      if(miniKey!=='chest' && miniKey!=='arms' && miniKey!=='core') {
+      if(miniKey!=='chest' && miniKey!=='arms' && miniKey!=='core' && miniKey!=='water' && miniKey!=='protein') {
         line(-9,-12+bob,-14,2+bob,skin,4); line(9,-12+bob,14,2+bob,skin,4);
         circle(-14,3+bob,2.5,skin); circle(14,3+bob,2.5,skin);
       }
@@ -165,7 +165,7 @@
         const step=Math.sin(anim*4)*7;
         line(-12,35,-20,48+step,ink,4); line(12,35,20,48-step,ink,4);
       } else if(miniKey==='water'){line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);circle(20,-14+bob,5,'#8bd7ee');line(17,-10+bob,22,-10+bob,'#8bd7ee',2);}
-      else if(miniKey==='protein'){line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);box(17,-17+bob,7,12,'#f1c36e',3);line(17,-17+bob,24,-17+bob,'#fff',1);}
+      else if(miniKey==='protein'){line(-9,-10+bob,-14,-3+bob,skin,4);line(-14,-3+bob,-7,-10+bob,skin,4);line(9,-10+bob,15,-3+bob,skin,4);line(15,-3+bob,19,-10+bob,skin,4);box(17,-17+bob,7,12,'#f1c36e',3);line(17,-17+bob,24,-17+bob,'#fff',1);}
       // 双腿始终连接到躯干底部，随动作轻微交替。
       const step=miniKey==='legs'?Math.sin(anim*4)*3:0;
       if(miniKey==='core') {
