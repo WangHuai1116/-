@@ -91,7 +91,7 @@
       line(195,top+180,195,top+500,'#c2d9bc',3);
       (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const t=1-d/28,yy=top+190+t*280,xx=o.lane===0?145:245,sc=0.45+t*0.7;c.save();c.translate(xx,yy);c.scale(sc,sc);if(o.type==='栅栏'){box(-28,-18,56,8,'#8b572f',3);box(-25,-10,6,31,'#9d673b',2);box(19,-10,6,31,'#9d673b',2);line(-19,0,19,0,'#d59a58',4);line(-19,10,19,10,'#d59a58',4);}else{c.strokeStyle='#d9a928';c.lineWidth=8;c.lineCap='round';c.beginPath();c.arc(0,0,17,0.2,Math.PI*1.7);c.stroke();c.strokeStyle='#a97920';c.lineWidth=3;c.beginPath();c.moveTo(-10,-8);c.lineTo(10,8);c.stroke();}c.restore();}});
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
-      c.save();c.translate(115,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
+      const playerX=115+160*(s.laneVisual==null?s.lane:s.laneVisual);c.save();c.translate(playerX,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
       c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false,true);text('♥',0,-78,24,'#e75f82','center');c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
