@@ -206,12 +206,12 @@
     text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
     if(['failed','won'].includes(s.phase)) {
-      box(20,top+145,350,330,'#19362b',26);text(s.phase==='won'?'♥  牵手成功':'挑战失败',195,top+199,29,lime,'center');
-      text(s.phase==='won'?'均衡训练 · 懂得休息 · 刚刚好的你':'别着急，下次跟着节奏练',195,top+242,15,'#fff','center');
+      box(20,top+145,350,330,'#19362b',26);text(s.phase==='won'?'♥  追上啦！':'这次差一点',195,top+199,29,lime,'center');
+      text(s.phase==='won'?'你做到了！':'别灰心，调整好节奏，再来一次吧',195,top+242,15,'#fff','center');
       // 长中文理由分行，防止窄屏溢出。
-      const msg=s.phase==='won'?'30 天薄肌挑战完成！':s.reason;
+      const msg=s.phase==='won'?'30 天薄肌挑战完成！':'这次没追上，下一次记得看准脚步和障碍';
       text(msg.slice(0,19),195,top+285,15,'#fff','center');text(msg.slice(19),195,top+312,15,'#fff','center');
-      button('restart','再挑战一次',50,top+356,290,54,lime);
+      button('restart','再试一次',50,top+356,290,54,lime);
     }
     if(confirmHome) { box(0,0,W,H,'#19362bcc',0);box(35,285,320,210,'#fff',24);text('确定返回选择？',195,330,24,ink,'center');text('当前训练进度会丢失',195,365,14,'#718375','center');button('cancelHome','继续训练',55,405,130,48,'#809482');button('confirmHome','确认返回',205,405,130,48,green); }
     if(paused) { box(0,0,W,H,'#19362b',0);text('已暂停',195,340,30,lime,'center');text('回到游戏后继续',195,389,17,'#fff','center'); }
