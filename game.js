@@ -148,7 +148,7 @@
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260), frog=E.frogs[s.frogId||0];
       const targetName=s.targetType==='beauty'?'美女':s.targetType==='nailong'?'奶龙':frog.name, targetColor=s.targetType==='beauty'?'#e75f82':s.targetType==='nailong'?'#f2c83d':frog.color;
       text(targetName+' · '+(s.targetType==='beauty'?'稀有目标':'稀有度 '+(s.frogId+1)+'/7'),195,top+160,12,targetColor,'center');
-      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);if(s.targetType==='beauty')body(0,0,'thin',0.65,null,false,true);else if(s.targetType==='nailong')drawNailong(0,0,0.78,0.5);else drawFrog(0,0,0.92,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
+      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);if(s.targetType==='beauty')body(0,0,'thin',0.65,null,false,true);else if(s.targetType==='nailong')drawNailong(0,0,1.12,0.5);else drawNailong(0,0,1.12,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
     }
