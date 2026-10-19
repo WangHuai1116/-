@@ -13,7 +13,7 @@
   const c = canvas.getContext('2d'); c.scale(canvas.width / W, canvas.height / H);
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
-  let state = null, confirmHome = false, hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
+  let state = null, confirmHome = false, showCollection = false, collection = [], hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
   let floatX = 340, floatY = 0, touchStart = null, touchMoved = false, swipeHandled = false;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
@@ -75,6 +75,17 @@
     } catch (_) {}
   }
   function saveWin() { best++;try { if(native) tt.setStorageSync('fitness-best',best);else localStorage.setItem('fitness-best',best); } catch (_) {} }
+  function drawDragon(x,y,scale,color,run){
+    c.save(); c.translate(x,y+Math.sin(anim*5)*run); c.scale(scale,scale);
+    // 原创奶龙：圆润身体、短角、尾巴和小翅膀，颜色由稀有度决定。
+    circle(0,32,34,'#f5c99a'); box(-31,8,62,58,color,22); circle(0,-10,25,'#f5c99a');
+    circle(-9,-12,3,ink); circle(9,-12,3,ink); line(-7,2,7,2,ink,3);
+    line(-29,28,-48,16,color,10); line(29,28,48,16,color,10);
+    line(-17,62,-25,88,color,14); line(17,62,25,88,color,14);
+    line(-25,88,-35,88,ink,8); line(25,88,35,88,ink,8);
+    line(-31,18,-48,4,color,7); line(31,18,48,4,color,7);
+    c.restore();
+  }
   function draw() {
     buttons=[];box(0,0,W,H,cream,0);
     const top=Math.max(38,safeTop+15);
@@ -91,6 +102,7 @@
       text('前期+2，70分后+0.5；每秒-0.7，超过100失败',30,top+586,13,'#92714f');
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
+      button('collection','奶龙图鉴',112,top+683,166,42,'#809482');
       // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
       if(!floatY) floatY=top+122;
       const fx=floatX, fy=floatY, fr=30;
@@ -99,11 +111,12 @@
       text('福利',fx,fy-5,12,'#fff','center');
       text('↗',fx,fy+12,13,'#fff','center');
       buttons.push({id:'sidebar',x:fx-fr,y:fy-fr,w:fr*2,h:fr*2});
-      text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');return;
+      text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');
+      if(showCollection){ box(18,90,354,570,'#19362b',24); text('奶龙收藏册',195,130,26,lime,'center'); text('已收集 '+collection.length+'/7',195,162,14,'#fff','center'); E.dragons.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;circle(x-42,y,d.color?20:20,d.color);text(d.name,x,y+32,12,'#fff','center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?lime:'#9aa99e','center');}); button('closeCollection','返回',120,610,150,40,lime); } return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
-    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'约会时刻':'挑战结果',38,top+68,15);
+    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'追逐奶龙':'挑战结果',38,top+68,15);
     text(training?Math.max(0,30-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*(chasing?chaseFill:progress)),5,green,2);
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
@@ -114,8 +127,9 @@
       (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const t=1-d/28,yy=top+190+t*280,xx=o.lane===0?145:245,sc=o.type==='栅栏'?0.7+t*1.0:0.5+t*0.8;c.save();c.translate(xx,yy);c.scale(sc,sc);if(o.type==='栅栏'){box(-28,-18,56,8,'#8b572f',3);box(-25,-10,6,31,'#9d673b',2);box(19,-10,6,31,'#9d673b',2);line(-19,0,19,0,'#d59a58',4);line(-19,10,19,10,'#d59a58',4);}else{c.fillStyle='#f4c936';c.strokeStyle='#8c4d3d';c.lineWidth=3;c.lineJoin='round';const peel=(draw)=>{c.beginPath();draw();c.closePath();c.fill();c.stroke();};peel(()=>{c.moveTo(0,-18);c.quadraticCurveTo(-12,-8,-15,7);c.quadraticCurveTo(-28,14,-37,7);c.quadraticCurveTo(-29,26,-8,17);c.quadraticCurveTo(3,9,0,-18);});peel(()=>{c.moveTo(2,-18);c.quadraticCurveTo(7,-6,22,1);c.quadraticCurveTo(36,1,39,9);c.quadraticCurveTo(28,17,14,10);c.quadraticCurveTo(4,5,2,-18);});peel(()=>{c.moveTo(1,-16);c.quadraticCurveTo(3,1,12,12);c.quadraticCurveTo(21,20,29,14);c.quadraticCurveTo(20,29,7,19);c.quadraticCurveTo(-2,9,1,-16);});c.fillStyle='#8c4d3d';c.fillRect(-3,-25,6,8);}c.restore();}});
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       const playerX=115+160*(s.laneVisual==null?s.lane:s.laneVisual);c.save();c.translate(playerX,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
-      const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260);
-      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);body(0,0,'thin',0.65,null,false,true);text('♥',0,-78,24,'#e75f82','center');c.restore();
+      const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260), dragon=E.dragons[s.dragonId||0];
+      text(dragon.name+' · 稀有度 '+(s.dragonId+1)+'/7',195,top+160,12,dragon.color,'center');
+      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);drawDragon(0,0,0.72,dragon.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
@@ -206,6 +220,8 @@
     }
     const hit=buttons.slice().reverse().find(b=>x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=b.y+b.h+10);
     if(!hit)return;
+    if(hit.id==='collection'){showCollection=true;draw();return;}
+    if(hit.id==='closeCollection'){showCollection=false;draw();return;}
     if(hit.id==='fat'||hit.id==='thin') selected=hit.id;
     else if(hit.id==='home') { confirmHome=true; }
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
@@ -215,7 +231,7 @@
         try { tt.navigateToScene({scene:'sidebar'}); } catch (_) {}
       }
     }
-    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won')saveWin();if(accepted) haptic(state.phase==='failed'?'error':'success'); }
+    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won'){saveWin();if(!collection.includes(state.dragonId))collection.push(state.dragonId);}if(accepted) haptic(state.phase==='failed'?'error':'success'); }
     draw();
   }
   function canvasPoint(t) {
