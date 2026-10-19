@@ -1,7 +1,20 @@
 (function(root,factory){if(typeof module!=='undefined')module.exports=factory();else root.FitnessGame=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
 const names={chest:'胸部',arms:'手臂',core:'腹部',legs:'腿部',water:'喝水',protein:'蛋白粉',sleep:'睡觉'};
 const base=['chest','legs','arms','core','water','protein','sleep'];
-function pickTarget(){const targetIndex=Math.floor(Math.random()*8);
+let targetBag=[];
+function pickTarget(){
+  if(!targetBag.length){
+    targetBag=[0,1,2,3,4,5,6,7];
+    const extraA=Math.floor(Math.random()*8);let extraB=Math.floor(Math.random()*8);
+    while(extraB===extraA)extraB=Math.floor(Math.random()*8);
+    targetBag.push(extraA,extraB);
+    let valid=false;
+    while(!valid){
+      for(let i=targetBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[targetBag[i],targetBag[j]]=[targetBag[j],targetBag[i]];}
+      valid=targetBag.every((v,i)=>i===0|| (v!==targetBag[i-1] && Math.abs(v-targetBag[i-1])!==1));
+    }
+  }
+  const targetIndex=targetBag.pop();
   if(targetIndex===7)return{type:'beauty',frogId:0};
   return{type:'frog',frogId:targetIndex};
 }
