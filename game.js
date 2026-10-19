@@ -13,7 +13,7 @@
   const c = canvas.getContext('2d'); c.scale(canvas.width / W, canvas.height / H);
   const safeTop = native && info.safeArea ? Math.max(0, info.safeArea.top || 0) / scale : 0;
   // 顶部保留胶囊和刘海空间，底部按钮在设计高度内。
-  let state = null, confirmHome = false, showCollection = false, collection = [], hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
+  let state = null, confirmHome = false, showCollection = false, collection = [], beautyCollected = false, hiddenAt = 0, selected = 'fat', buttons = [], last = 0, anim = 0, paused = false, best = 0;
   let floatX = 340, floatY = 0, touchStart = null, touchMoved = false, swipeHandled = false;
   try { best = Number(native ? tt.getStorageSync('fitness-best') : localStorage.getItem('fitness-best')) || 0; } catch (_) {}
   const ink = '#19362b', green = '#356a48', lime = '#d8f376', cream = '#f8f9ed';
@@ -118,7 +118,7 @@
       text('↗',fx,fy+12,13,'#fff','center');
       buttons.push({id:'sidebar',x:fx-fr,y:fy-fr,w:fr*2,h:fr*2});
       text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');
-      if(showCollection){ box(18,90,354,570,'#19362b',24); text('奶蛙收藏册',195,130,26,lime,'center'); text('已收集 '+collection.length+'/7',195,162,14,'#fff','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;circle(x-42,y,d.color?20:20,d.color);text(d.name,x,y+32,12,'#fff','center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?lime:'#9aa99e','center');}); button('closeCollection','返回',120,610,150,40,lime); } return;
+      if(showCollection){ box(18,90,354,570,'#19362b',24); text('奶蛙收藏册',195,130,26,lime,'center'); text('已收集 '+(collection.length+(beautyCollected?1:0))+'/8',195,162,14,'#fff','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;circle(x-42,y,d.color?20:20,d.color);text(d.name,x,y+32,12,'#fff','center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?lime:'#9aa99e','center');}); text('美女模型',105,595,12,'#fff','center'); text(beautyCollected?'已解锁':'未解锁',105,612,10,beautyCollected?lime:'#9aa99e','center'); button('closeCollection','返回',120,650,150,40,lime); } return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
@@ -134,9 +134,9 @@
       const run=Math.sin(anim*12)*(s.onGround?1:0), style=E.bodyType(s)==='thick'?'thick':'thin';
       const playerX=115+160*(s.laneVisual==null?s.lane:s.laneVisual);c.save();c.translate(playerX,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260), frog=E.frogs[s.frogId||0];
-      text(frog.name+' · 稀有度 '+(s.frogId+1)+'/7',195,top+160,12,frog.color,'center');
-      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);drawFrog(0,0,0.92,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
-      text('美女',285,top+160,11,'#c46b77','center');
+      const targetName=s.targetType==='beauty'?'美女':frog.name, targetColor=s.targetType==='beauty'?'#e75f82':frog.color;
+      text(targetName+' · '+(s.targetType==='beauty'?'稀有目标':'稀有度 '+(s.frogId+1)+'/7'),195,top+160,12,targetColor,'center');
+      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);if(s.targetType==='beauty')body(0,0,'thin',0.65,null,false,true);else drawFrog(0,0,0.92,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
     }
@@ -237,7 +237,7 @@
         try { tt.navigateToScene({scene:'sidebar'}); } catch (_) {}
       }
     }
-    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won'){saveWin();if(!collection.includes(state.frogId))collection.push(state.frogId);}if(accepted) haptic(state.phase==='failed'?'error':'success'); }
+    else if(state) { const was=state.phase;const accepted=E.action(state,hit.id);if(was!=='won'&&state.phase==='won'){saveWin();if(state.targetType==='beauty') beautyCollected=true; else if(!collection.includes(state.frogId)) collection.push(state.frogId);}if(accepted) haptic(state.phase==='failed'?'error':'success'); }
     draw();
   }
   function canvasPoint(t) {
