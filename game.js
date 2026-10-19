@@ -92,7 +92,7 @@
     circle(-12,-22,8,'#8bd64c'); circle(12,-22,8,'#8bd64c'); circle(-12,-22,3,ink); circle(12,-22,3,ink); line(-8,-5,8,-5,dark,3);
     c.restore();
   }
-  function drawNailong(x,y,scale,run){
+  function drawNailong(x,y,scale,color,run){
     c.save(); const step=Math.sin(anim*10), bob=Math.abs(step)*2; c.translate(x,y+bob); c.scale(scale,scale);
     const yellow=color, belly='#f7e3b7', dark='#5b3b27';
     c.fillStyle=yellow; c.beginPath(); c.ellipse(0,35,39,52,0,0,Math.PI*2); c.fill();
