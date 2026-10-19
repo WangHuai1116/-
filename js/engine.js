@@ -5,8 +5,15 @@ let targetBag=[];
 function pickTarget(){
   if(!targetBag.length){
     targetBag=[0,1,2,3,4,5,6,7];
-    targetBag.push(Math.floor(Math.random()*8),Math.floor(Math.random()*8));
-    for(let i=targetBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[targetBag[i],targetBag[j]]=[targetBag[j],targetBag[i]];}
+    const extraA=Math.floor(Math.random()*8);
+    let extraB=Math.floor(Math.random()*8);
+    while(extraB===extraA)extraB=Math.floor(Math.random()*8);
+    targetBag.push(extraA,extraB);
+    let valid=false;
+    while(!valid){
+      for(let i=targetBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[targetBag[i],targetBag[j]]=[targetBag[j],targetBag[i]];}
+      valid=targetBag.every((v,i)=>i===0||v!==targetBag[i-1]);
+    }
   }
   const targetIndex=targetBag.pop();
   if(targetIndex===7)return{type:'beauty',frogId:0};
