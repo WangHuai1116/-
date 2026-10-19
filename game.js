@@ -77,16 +77,20 @@
   function saveWin() { best++;try { if(native) tt.setStorageSync('fitness-best',best);else localStorage.setItem('fitness-best',best); } catch (_) {} }
   function drawFrog(x,y,scale,color,run){
     c.save(); c.translate(x,y+Math.sin(anim*5)*run); c.scale(scale,scale);
-    // 按参考图绘制圆润奶蛙：大腹部、短腿蹲姿、粗手臂和深色脚掌。
-    const belly='#f7e4bd', dark='#513b2d';
-    c.fillStyle=color; c.beginPath(); c.ellipse(0,36,48,52,0,0,Math.PI*2); c.fill();
-    c.fillStyle=belly; c.beginPath(); c.ellipse(0,43,34,38,0,0,Math.PI*2); c.fill();
-    c.fillStyle=color; c.beginPath(); c.ellipse(0,-12,32,39,0,0,Math.PI*2); c.fill();
-    c.fillStyle=color; c.beginPath(); c.ellipse(-38,31,16,35,-0.45,0,Math.PI*2); c.ellipse(38,31,16,35,0.45,0,Math.PI*2); c.fill();
-    c.fillStyle=color; c.beginPath(); c.ellipse(-28,79,22,16,0.3,0,Math.PI*2); c.ellipse(28,79,22,16,-0.3,0,Math.PI*2); c.fill();
-    c.fillStyle=dark; c.beginPath(); c.ellipse(-34,93,18,7,0,0,Math.PI*2); c.ellipse(34,93,18,7,0,0,Math.PI*2); c.fill();
-    circle(-12,-16,7,'#8bd64c'); circle(12,-16,7,'#8bd64c'); circle(-12,-16,3,ink); circle(12,-16,3,ink);
-    line(-8,1,8,1,dark,3); c.restore();
+    const belly='#f6dfb5', dark='#4a3428';
+    // 大肚梨形躯干
+    c.fillStyle=color; c.beginPath(); c.moveTo(-31,-4); c.quadraticCurveTo(-42,22,-43,52); c.quadraticCurveTo(-42,88,-25,96); c.quadraticCurveTo(0,108,25,96); c.quadraticCurveTo(42,88,43,52); c.quadraticCurveTo(42,22,31,-4); c.closePath(); c.fill();
+    c.fillStyle=belly; c.beginPath(); c.ellipse(0,49,30,40,0,0,Math.PI*2); c.fill();
+    c.fillStyle=color; c.beginPath(); c.ellipse(0,-18,31,35,0,0,Math.PI*2); c.fill();
+    // 左臂弯曲护腹，右臂抬起挥手
+    line(-27,18,-47,40,color,14); line(-47,40,-28,51,dark,11);
+    line(27,18,45,10,color,14); line(45,10,61,-5,color,12); circle(64,-8,8,dark);
+    // 蹲姿大腿、小腿和脚掌
+    line(-25,72,-48,91,color,24); line(-48,91,-39,112,color,18); line(-39,112,-55,114,dark,11);
+    line(25,72,48,91,color,24); line(48,91,39,112,color,18); line(39,112,55,114,dark,11);
+    // 眼睛与嘴
+    circle(-12,-22,8,'#8bd64c'); circle(12,-22,8,'#8bd64c'); circle(-12,-22,3,ink); circle(12,-22,3,ink); line(-8,-5,8,-5,dark,3);
+    c.restore();
   }
   function draw() {
     buttons=[];box(0,0,W,H,cream,0);
@@ -131,7 +135,7 @@
       const playerX=115+160*(s.laneVisual==null?s.lane:s.laneVisual);c.save();c.translate(playerX,top+340+Math.abs(run)*2);c.rotate(run*0.035);body(0,0,style,1,null,false);c.restore();
       const gap=Math.max(0,s.beautyDistance-s.distance), far=Math.max(0.28,0.62-gap/260), frog=E.frogs[s.frogId||0];
       text(frog.name+' · 稀有度 '+(s.frogId+1)+'/7',195,top+160,12,frog.color,'center');
-      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);drawFrog(0,0,0.72,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
+      c.save();c.translate(285,top+190);c.scale(far,far);c.rotate(-run*0.06);drawFrog(0,0,0.92,frog.color,0.5);text('♥',0,-78,24,'#e75f82','center');c.restore();
       text('美女',285,top+160,11,'#c46b77','center');
     } else {
       body(190,top+227,E.bodyType(s)==='original'?s.body:E.bodyType(s)==='thick'?'thick':'thin',E.bodyType(s)==='original'?0:1,training&&exp!=='arms'?exp:null,false);
