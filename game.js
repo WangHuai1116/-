@@ -122,10 +122,10 @@
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
-    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'追逐奶蛙':'挑战结果',38,top+68,15);
-    text(training?Math.max(0,30-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?'距女生 '+E.gap(s).toFixed(1)+'m':'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
+    text(training?'DAY '+Math.min(30,Math.floor(s.elapsed)+1)+'/30':s.phase==='maintain'?'保持薄肌':s.phase==='walk'?'追逐目标':'挑战结果',38,top+68,15);
+    text(training?Math.max(0,30-s.elapsed).toFixed(1)+'s':s.phase==='maintain'?Math.max(0,10-s.maintain).toFixed(1)+'s':chasing?((s.targetType==='beauty'?'距女生 ':'距奶蛙 ')+E.gap(s).toFixed(1)+'m'):'完成 '+Math.round(progress*100)+'%',350,top+68,18,green,'right');
     box(38,top+87,314,5,'#cdd9c5',2);box(38,top+87,Math.max(1,314*(chasing?chaseFill:progress)),5,green,2);
-    text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上她！':'',195,top+134,21,green,'center');
+    text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上'+(s.targetType==='beauty'?'她':'奶蛙')+'！':'',195,top+134,21,green,'center');
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
@@ -201,7 +201,7 @@
     const ready=s.elapsed-s.lastTap>=0.45;
     circle(37,top+445,5,ready?green:'#d38350');text(ready?'节奏就绪 · 可以点':'稍等一下 · 不要连点',50,top+445,12);
     text(s.score.toFixed(1)+'分 · '+(E.bodyType(s)==='original'?'原体型':E.bodyType(s)==='lean'?'薄肌':'厚肌'),350,top+445,12,'#758875','right');
-    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右脚交替前进 · 拖动人物左右换道躲避障碍 · 距女生 '+E.gap(s).toFixed(1)+'m',195,top+606,11,ink,'center'); }
+    if(s.phase==='fallen'){button('recover','快速点击爬起',24,top+525,342,57,'#d38350');} else if(s.phase==='walk'){ button('left','左脚',24,top+525,162,57,s.nextFoot==='left'?green:'#809482'); button('right','右脚',204,top+525,162,57,s.nextFoot==='right'?green:'#809482'); text('左右脚交替前进 · 拖动人物左右换道躲避障碍 · 距'+(s.targetType==='beauty'?'女生':'奶蛙')+' '+E.gap(s).toFixed(1)+'m',195,top+606,11,ink,'center'); }
     else ['water','protein','sleep'].forEach((id,i)=>button(id, E.names[id],24+i*116,top+525,110,57,green));
     text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
