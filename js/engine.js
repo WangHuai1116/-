@@ -5,6 +5,7 @@ let targetBag=[];
 function pickTarget(){
   if(!targetBag.length){
     targetBag=[0,1,2,3,4,5,6,7];
+    targetBag.push(Math.floor(Math.random()*8),Math.floor(Math.random()*8));
     for(let i=targetBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[targetBag[i],targetBag[j]]=[targetBag[j],targetBag[i]];}
   }
   const targetIndex=targetBag.pop();
