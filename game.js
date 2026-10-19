@@ -94,7 +94,7 @@
   }
   function drawNailong(x,y,scale,run){
     c.save(); const step=Math.sin(anim*10), bob=Math.abs(step)*2; c.translate(x,y+bob); c.scale(scale,scale);
-    const yellow='#f2c83d', belly='#f7e3b7', dark='#5b3b27';
+    const yellow=color, belly='#f7e3b7', dark='#5b3b27';
     c.fillStyle=yellow; c.beginPath(); c.ellipse(0,35,39,52,0,0,Math.PI*2); c.fill();
     c.fillStyle=belly; c.beginPath(); c.ellipse(0,45,28,36,0,0,Math.PI*2); c.fill();
     c.fillStyle=yellow; c.beginPath(); c.ellipse(0,-18,27,34,0,0,Math.PI*2); c.fill();
