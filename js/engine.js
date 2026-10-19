@@ -1,7 +1,16 @@
 (function(root,factory){if(typeof module!=='undefined')module.exports=factory();else root.FitnessGame=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
 const names={chest:'胸部',arms:'手臂',core:'腹部',legs:'腿部',water:'喝水',protein:'蛋白粉',sleep:'睡觉'};
 const base=['chest','legs','arms','core','water','protein','sleep'];
-function pickTarget(){const targetIndex=Math.floor(Math.random()*8);if(targetIndex===7)return{type:'beauty',frogId:0};return{type:'frog',frogId:targetIndex};}
+let targetBag=[];
+function pickTarget(){
+  if(!targetBag.length){
+    targetBag=[0,1,2,3,4,5,6,7];
+    for(let i=targetBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[targetBag[i],targetBag[j]]=[targetBag[j],targetBag[i]];}
+  }
+  const targetIndex=targetBag.pop();
+  if(targetIndex===7)return{type:'beauty',frogId:0};
+  return{type:'frog',frogId:targetIndex};
+}
 function targetFields(skip){const t=skip?pickTarget():{type:'frog',frogId:0};return {frogId:t.frogId,targetType:t.type};}
 const frogs=[{id:'red',name:'赤奶蛙',color:'#e94f4f',speed:5.0},{id:'orange',name:'橙奶蛙',color:'#f28c28',speed:5.8},{id:'yellow',name:'黄奶蛙',color:'#f2d34f',speed:6.6},{id:'green',name:'绿奶蛙',color:'#55ad68',speed:7.4},{id:'cyan',name:'青奶蛙',color:'#35bfc2',speed:8.2},{id:'blue',name:'蓝奶蛙',color:'#4e7de5',speed:9.0},{id:'purple',name:'紫奶蛙',color:'#9b59d0',speed:9.8}];
 function makePlan(){const p=[];for(let r=0;r<6;r++){const a=base.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}p.push(...a);}return p;}
