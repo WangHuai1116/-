@@ -103,7 +103,16 @@
       text('前期+2，70分后+0.5；每秒-0.7，超过100失败',30,top+586,13,'#92714f');
       button('start','开始30天',24,top+613,205,56,green);
       button('chase','直接追美女',241,top+613,125,56,'#d38350');
-      button('collection','奶蛙图鉴',112,top+683,166,42,'#809482');
+      // 图鉴入口放在人物左侧留白区，避免挤占底部主按钮。
+      const albumX=62, albumY=top+225, albumR=27;
+      circle(albumX,albumY,albumR,'#356a48');
+      circle(albumX,albumY,albumR-4,'#eef5e5');
+      box(albumX-12,albumY-10,24,19,'#d8f376',5);
+      line(albumX,albumY-8,albumX,albumY+7,'#356a48',2);
+      line(albumX-8,albumY-4,albumX-3,albumY-4,'#356a48',1.5);
+      line(albumX+3,albumY-4,albumX+8,albumY-4,'#356a48',1.5);
+      text('图鉴',albumX,albumY+39,11,'#356a48','center');
+      buttons.push({id:'collection',x:albumX-albumR,y:albumY-albumR,w:albumR*2,h:albumR*2});
       // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
       if(!floatY) floatY=top+122;
       const fx=floatX, fy=floatY, fr=30;
