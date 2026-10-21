@@ -213,10 +213,16 @@
     text(s.message,195,top+592,12,ink,'center');
     button('restart','重新开始',24,top+636,162,45,green);button('home','返回选择',204,top+636,162,45,'#809482');
     if(['failed','won'].includes(s.phase)) {
-      box(20,top+145,350,330,'#19362b',26);text(s.phase==='won'?'♥  追上啦！':'这次差一点',195,top+199,29,lime,'center');
-      text(s.phase==='won'?'你做到了！':'别灰心，调整好节奏，再来一次吧',195,top+242,15,'#fff','center');
+      if(s.phase==='won'){
+        const fireworks=[['#ffcf3f',75,top+175],['#ff6f91',315,top+188],['#62d8ff',55,top+360],['#b77cff',335,top+350]];
+        fireworks.forEach(function(f,k){const pulse=(Math.sin(anim*4+k)+1)/2;c.fillStyle=f[0];for(let i=0;i<10;i++){const a=i*Math.PI/5+anim*0.35,r=18+pulse*10;c.beginPath();c.arc(f[1]+Math.cos(a)*r,f[2]+Math.sin(a)*r,2.5,0,Math.PI*2);c.fill();}circle(f[1],f[2],3,f[0]);});
+      }
+      box(20,top+145,350,330,s.phase==='won'?'#124b38':'#19362b',26);
+      const winFrog=s.targetType==='beauty'?null:E.frogs[s.frogId||0], winName=s.targetType==='beauty'?'美女':winFrog.name, winColor=s.targetType==='beauty'?'#ff7eaa':winFrog.color;
+      text(s.phase==='won'?'♥  追上啦！':'这次差一点',195,top+199,29,s.phase==='won'?lime:'#fff','center');
+      text(s.phase==='won'?'你追到了 '+winName+'！':'别灰心，调整好节奏，再来一次吧',195,top+242,s.phase==='won'?18:15,s.phase==='won'?winColor:'#fff','center');
       // 长中文理由分行，防止窄屏溢出。
-      const msg=s.phase==='won'?'30 天薄肌挑战完成！':'这次没追上，下一次记得看准脚步和障碍';
+      const msg=s.phase==='won'?'30 天薄肌挑战完成！ 收藏册已记录':'这次没追上，下一次记得看准脚步和障碍';
       text(msg.slice(0,19),195,top+285,15,'#fff','center');text(msg.slice(19),195,top+312,15,'#fff','center');
       button('restart','再试一次',50,top+356,290,54,lime);
     }
