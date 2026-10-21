@@ -227,6 +227,10 @@
       // 长中文理由分行，防止窄屏溢出。
       const msg=s.phase==='won'?'30 天薄肌挑战完成！ 收藏册已记录':'这次没追上，下一次记得看准脚步和障碍';
       text(msg.slice(0,19),195,top+285,15,'#fff','center');text(msg.slice(19),195,top+312,15,'#fff','center');
+      if(s.phase==='won'){
+        const fireworks=[['#ffcf3f',75,top+175],['#ff6f91',315,top+188],['#62d8ff',55,top+360],['#b77cff',335,top+350]];
+        fireworks.forEach(function(f,k){const pulse=(Math.sin(anim*4+k)+1)/2;c.fillStyle=f[0];for(let i=0;i<10;i++){const a=i*Math.PI/5+anim*0.35,r=18+pulse*10;c.beginPath();c.arc(f[1]+Math.cos(a)*r,f[2]+Math.sin(a)*r,2.5,0,Math.PI*2);c.fill();}circle(f[1],f[2],3,f[0]);});
+      }
       button('restart','再试一次',50,top+356,290,54,lime);
     }
     if(confirmHome) { box(0,0,W,H,'#19362bcc',0);box(35,285,320,210,'#fff',24);text('确定返回选择？',195,330,24,ink,'center');text('当前训练进度会丢失',195,365,14,'#718375','center');button('cancelHome','继续训练',55,405,130,48,'#809482');button('confirmHome','确认返回',205,405,130,48,green); }
