@@ -1,5 +1,5 @@
 (function(root,factory){if(typeof module!=='undefined')module.exports=factory();else root.FitnessGame=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
-const names={chest:'胸部',arms:'手臂',core:'腹部',legs:'腿部',water:'喝水',protein:'蛋白粉',sleep:'睡觉'};
+const names={chest:'胸部',arms:'手臂',core:'腹部',legs:'腿部',water:'大水',protein:'蛋白粉',sleep:'睡觉'};
 const base=['chest','legs','arms','core','water','protein','sleep'];
 let targetBag=[];
 function pickTarget(){
