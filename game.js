@@ -23,9 +23,9 @@
   function line(x,y,xx,yy,color,w) { c.strokeStyle=color;c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(xx,yy);c.stroke(); }
   function button(id,label,x,y,w,h,color) { box(x,y,w,h,color||green,16);text(label,x+w/2,y+h/2,17,color===lime?ink:'#fff','center');buttons.push({id,x,y,w,h}); }
   function bodyWidth(kind,progress) { return kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9; }
-  function body(cx,cy,kind,progress,focus,small,female,pose) {
+  function body(cx,cy,kind,progress,focus,small,female,pose,silhouette) {
     c.save(); c.translate(cx,cy); c.scale(small ? 0.34 : 1, small ? 0.34 : 1);
-    const skin='#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
+    const skin=silhouette?'#26352f':'#efb58f'; const broad=kind==='thick'?67:kind==='fat'?51-progress*16:26+progress*9;
     const bounce=state&&state.events?Math.sin(anim*6)*2:0;
     c.translate(0,bounce);
     // 深蹲以脚底为支点，脚掌位置保持不动。
@@ -52,10 +52,10 @@
     else if(pose==='core'){ line(-broad+4,9,-30,-34,skin,armW); line(broad-4,9,30,-34,skin,armW); }
     else line(-broad+4,9,-broad-14,77,skin,armW);
     if(!pose || (pose!=='chest' && pose!=='arms' && pose!=='core')) line(broad-4,9,broad+14,77,skin,armW);
-    box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,green,9);
+    box(-broad,0,broad*2,105,skin,32); box(-broad,88,broad*2,27,silhouette?'#26352f':green,9);
     circle(0,-36,27,skin);box(-26,-61,52,18,ink,8);
-    circle(-9,-37,2,ink);circle(9,-37,2,ink);line(-6,-24,6,-24,ink,2);
-    if(female){ box(-broad,0,broad*2,88,'#e86f89',24); c.fillStyle='#5a2b27';c.beginPath();c.arc(0,-55,25,Math.PI,Math.PI*2);c.fill();c.fillStyle='#e75f82';c.beginPath();c.moveTo(-24,88);c.lineTo(24,88);c.lineTo(31,118);c.lineTo(-31,118);c.closePath();c.fill(); }
+    circle(-9,-37,2,silhouette?'#26352f':ink);circle(9,-37,2,silhouette?'#26352f':ink);line(-6,-24,6,-24,silhouette?'#26352f':ink,2);
+    if(female&&!silhouette){ box(-broad,0,broad*2,88,'#e86f89',24); c.fillStyle='#5a2b27';c.beginPath();c.arc(0,-55,25,Math.PI,Math.PI*2);c.fill();c.fillStyle='#e75f82';c.beginPath();c.moveTo(-24,88);c.lineTo(24,88);c.lineTo(31,118);c.lineTo(-31,118);c.closePath();c.fill(); }
     if(progress>0.4) { line(0,14,0,80,'#cd8e70',2);line(-22,39,22,39,'#cd8e70',2);line(-16,58,16,58,'#cd8e70',2); }
     if(!small && focus) {
       const map={chest:[0,24,37],arms:[-broad-8,47,22],core:[0,70,27],legs:[0,143,37]};
@@ -124,7 +124,7 @@
       text('↗',fx,fy+12,13,'#fff','center');
       buttons.push({id:'sidebar',x:fx-fr,y:fy-fr,w:fr*2,h:fr*2});
       text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');
-      if(showCollection){ box(18,90,354,570,'#eef5e5',24); c.strokeStyle='#b7d7ad';c.lineWidth=2;c.strokeRect(19,91,352,568); line(38,180,352,180,'#c9dfc1',2); text('奶蛙收藏册',195,130,26,green,'center'); text('已收集 '+(collection.length+(beautyCollected?1:0))+'/8',195,162,14,'#637b67','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;drawFrog(x-42,y,0.42,d.color,0);text(d.name,x,y+32,12,ink,'center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?green:'#9aa99e','center');}); if(beautyCollected){body(243,505,'thin',0.65,null,true,true,'beauty');}else{c.save();const step=Math.sin(anim*10),bob=Math.abs(step)*2,arm=Math.sin(anim*4)*10;c.translate(243,505+bob);c.scale(0.34,0.34);c.fillStyle='#26352f';c.beginPath();c.arc(0,-36,27,0,Math.PI*2);c.fill();box(-26,0,52,105,'#26352f',22);line(-21,9,-35,77+arm,'#26352f',15);line(21,9,35,77-arm,'#26352f',15);line(-21,102,-25,174+step*8,'#26352f',18);line(21,102,25,174-step*8,'#26352f',18);c.restore();}text('美女',285,537,12,ink,'center');text(beautyCollected?'已解锁':'未解锁',285,557,10,ink,'center'); button('closeCollection','返回',120,650,150,40,lime); } return;
+      if(showCollection){ box(18,90,354,570,'#eef5e5',24); c.strokeStyle='#b7d7ad';c.lineWidth=2;c.strokeRect(19,91,352,568); line(38,180,352,180,'#c9dfc1',2); text('奶蛙收藏册',195,130,26,green,'center'); text('已收集 '+(collection.length+(beautyCollected?1:0))+'/8',195,162,14,'#637b67','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;drawFrog(x-42,y,0.42,d.color,0);text(d.name,x,y+32,12,ink,'center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?green:'#9aa99e','center');}); body(243,505,'thin',0.65,null,true,true,'beauty',!beautyCollected);text('美女',285,537,12,ink,'center');text(beautyCollected?'已解锁':'未解锁',285,557,10,ink,'center'); button('closeCollection','返回',120,650,150,40,lime); } return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
@@ -134,7 +134,10 @@
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上'+(s.targetType==='beauty'?'她':'奶蛙')+'！':'',195,top+134,21,green,'center');
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
-      button('instantWin','直接通关',24,top+195,92,38,'#d38350');
+      circle(70,top+214,27,'#d38350');
+      circle(70,top+214,23,'#ed8a4b');
+      text('通关',70,top+214,12,'#fff','center');
+      buttons.push({id:'instantWin',x:43,y:top+187,w:54,h:54});
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
       line(195,top+180,195,top+500,'#c2d9bc',3);
       (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const t=1-d/28,yy=top+190+t*280,xx=o.lane===0?145:245,sc=o.type==='栅栏'?0.7+t*1.0:0.5+t*0.8;c.save();c.translate(xx,yy);c.scale(sc,sc);if(o.type==='栅栏'){box(-28,-18,56,8,'#8b572f',3);box(-25,-10,6,31,'#9d673b',2);box(19,-10,6,31,'#9d673b',2);line(-19,0,19,0,'#d59a58',4);line(-19,10,19,10,'#d59a58',4);}else{c.fillStyle='#f4c936';c.strokeStyle='#8c4d3d';c.lineWidth=3;c.lineJoin='round';const peel=(draw)=>{c.beginPath();draw();c.closePath();c.fill();c.stroke();};peel(()=>{c.moveTo(0,-18);c.quadraticCurveTo(-12,-8,-15,7);c.quadraticCurveTo(-28,14,-37,7);c.quadraticCurveTo(-29,26,-8,17);c.quadraticCurveTo(3,9,0,-18);});peel(()=>{c.moveTo(2,-18);c.quadraticCurveTo(7,-6,22,1);c.quadraticCurveTo(36,1,39,9);c.quadraticCurveTo(28,17,14,10);c.quadraticCurveTo(4,5,2,-18);});peel(()=>{c.moveTo(1,-16);c.quadraticCurveTo(3,1,12,12);c.quadraticCurveTo(21,20,29,14);c.quadraticCurveTo(20,29,7,19);c.quadraticCurveTo(-2,9,1,-16);});c.fillStyle='#8c4d3d';c.fillRect(-3,-25,6,8);}c.restore();}});
