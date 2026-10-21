@@ -124,7 +124,7 @@
       text('↗',fx,fy+12,13,'#fff','center');
       buttons.push({id:'sidebar',x:fx-fr,y:fy-fr,w:fr*2,h:fr*2});
       text('侧边栏每日福利',fx,fy+45,10,'#92714f','center');
-      if(showCollection){ box(18,90,354,570,'#19362b',24); text('奶蛙收藏册',195,130,26,lime,'center'); text('已收集 '+(collection.length+(beautyCollected?1:0))+'/8',195,162,14,'#fff','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;circle(x-42,y,d.color?20:20,d.color);text(d.name,x,y+32,12,'#fff','center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?lime:'#9aa99e','center');}); text('美女模型',105,595,12,'#fff','center'); text(beautyCollected?'已解锁':'未解锁',105,612,10,beautyCollected?lime:'#9aa99e','center'); button('closeCollection','返回',120,650,150,40,lime); } return;
+      if(showCollection){ box(18,90,354,570,'#19362b',24); text('奶蛙收藏册',195,130,26,lime,'center'); text('已收集 '+(collection.length+(beautyCollected?1:0))+'/8',195,162,14,'#fff','center'); E.frogs.forEach(function(d,i){const col=i%2,row=Math.floor(i/2),x=105+col*180,y=220+row*95;circle(x-42,y,d.color?20:20,d.color);text(d.name,x,y+32,12,'#fff','center');text(collection.includes(i)?'已解锁':'未解锁',x,y+50,10,collection.includes(i)?lime:'#9aa99e','center');}); circle(243,505,20,'#e75f82');text('美女模型',285,537,12,'#fff','center');text(beautyCollected?'已解锁':'未解锁',285,557,10,beautyCollected?lime:'#9aa99e','center'); button('closeCollection','返回',120,650,150,40,lime); } return;
     }
     const s=state, progress=Math.max(0,Math.min(s.score/100,1)), exp=E.expected(s), training=s.phase==='training', chasing=['walk','fallen'].includes(s.phase), chaseFill=Math.max(0,Math.min(1,1-E.gap(s)/80));
     box(24,top+48,342,58,'#e7eddf',16);
