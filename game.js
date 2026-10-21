@@ -70,8 +70,12 @@
   function haptic(kind) {
     if(!native) return;
     try {
-      if(typeof tt.vibrateShort==='function') { tt.vibrateShort({type:kind==='error'?'heavy':'light'}); return; }
-      if(kind==='error' && typeof tt.vibrateLong==='function') tt.vibrateLong({});
+      const type=kind==='error'?'heavy':'light';
+      if(typeof tt.vibrateShort==='function') {
+        try { tt.vibrateShort({type}); } catch (_) { try { tt.vibrateShort(); } catch (_) {} }
+      } else if(typeof tt.vibrateLong==='function') {
+        tt.vibrateLong({duration:kind==='error'?220:70});
+      }
     } catch (_) {}
   }
   function saveWin() { best++;try { if(native) tt.setStorageSync('fitness-best',best);else localStorage.setItem('fitness-best',best); } catch (_) {} }
