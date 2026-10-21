@@ -107,10 +107,12 @@
       const albumX=62, albumY=top+225, albumR=27;
       circle(albumX,albumY,albumR,'#356a48');
       circle(albumX,albumY,albumR-4,'#eef5e5');
-      box(albumX-12,albumY-10,24,19,'#d8f376',5);
-      line(albumX,albumY-8,albumX,albumY+7,'#356a48',2);
-      line(albumX-8,albumY-4,albumX-3,albumY-4,'#356a48',1.5);
-      line(albumX+3,albumY-4,albumX+8,albumY-4,'#356a48',1.5);
+      // 奶油色奶蛙头像：小尺寸下保留轮廓、眼睛和肚皮特征。
+      c.fillStyle='#f5dfb0';c.beginPath();c.ellipse(albumX,albumY+3,13,14,0,0,Math.PI*2);c.fill();
+      c.fillStyle='#f8e8c4';c.beginPath();c.ellipse(albumX,albumY+7,9,8,0,0,Math.PI*2);c.fill();
+      circle(albumX-5,albumY-6,4,'#87c83c');circle(albumX+5,albumY-6,4,'#87c83c');
+      circle(albumX-5,albumY-6,1.8,'#19362b');circle(albumX+5,albumY-6,1.8,'#19362b');
+      line(albumX-3,albumY+1,albumX+3,albumY+1,'#6b4b32',1.5);
       text('图鉴',albumX,albumY+39,11,'#356a48','center');
       buttons.push({id:'collection',x:albumX-albumR,y:albumY-albumR,w:albumR*2,h:albumR*2});
       // 侧边栏复访入口使用悬浮球，避免占用底部主操作区。
