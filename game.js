@@ -134,6 +134,7 @@
     text(training?'教练：'+E.names[exp]+'  ↓':s.phase==='maintain'?'已经刚刚好，放松 10 秒':s.phase==='fallen'?'摔倒了！快速点击屏幕爬起来':s.phase==='walk'?'交替点击 '+(s.nextFoot==='left'?'左脚':'右脚')+'，追上'+(s.targetType==='beauty'?'她':'奶蛙')+'！':'',195,top+134,21,green,'center');
     if(s.phase==='walk') {
       c.fillStyle='#d9e8d0';c.beginPath();c.moveTo(55,top+180);c.lineTo(335,top+180);c.lineTo(380,top+500);c.lineTo(10,top+500);c.closePath();c.fill();
+      button('instantWin','直接通关',24,top+195,92,38,'#d38350');
       for(let i=0;i<4;i++){const yy=top+205+i*75;line(195-(yy-top-180)*0.28,yy,195+(yy-top-180)*0.28,yy,'#f5f0bb',3);}
       line(195,top+180,195,top+500,'#c2d9bc',3);
       (s.obstacles||[]).forEach(o=>{const d=o.distance-s.distance;if(d>0&&d<28){const t=1-d/28,yy=top+190+t*280,xx=o.lane===0?145:245,sc=o.type==='栅栏'?0.7+t*1.0:0.5+t*0.8;c.save();c.translate(xx,yy);c.scale(sc,sc);if(o.type==='栅栏'){box(-28,-18,56,8,'#8b572f',3);box(-25,-10,6,31,'#9d673b',2);box(19,-10,6,31,'#9d673b',2);line(-19,0,19,0,'#d59a58',4);line(-19,10,19,10,'#d59a58',4);}else{c.fillStyle='#f4c936';c.strokeStyle='#8c4d3d';c.lineWidth=3;c.lineJoin='round';const peel=(draw)=>{c.beginPath();draw();c.closePath();c.fill();c.stroke();};peel(()=>{c.moveTo(0,-18);c.quadraticCurveTo(-12,-8,-15,7);c.quadraticCurveTo(-28,14,-37,7);c.quadraticCurveTo(-29,26,-8,17);c.quadraticCurveTo(3,9,0,-18);});peel(()=>{c.moveTo(2,-18);c.quadraticCurveTo(7,-6,22,1);c.quadraticCurveTo(36,1,39,9);c.quadraticCurveTo(28,17,14,10);c.quadraticCurveTo(4,5,2,-18);});peel(()=>{c.moveTo(1,-16);c.quadraticCurveTo(3,1,12,12);c.quadraticCurveTo(21,20,29,14);c.quadraticCurveTo(20,29,7,19);c.quadraticCurveTo(-2,9,1,-16);});c.fillStyle='#8c4d3d';c.fillRect(-3,-25,6,8);}c.restore();}});
@@ -238,6 +239,7 @@
     else if(hit.id==='home') { confirmHome=true; }
     else if(hit.id==='start'||hit.id==='restart')state=E.create(selected);
     else if(hit.id==='chase')state=E.create(selected,true);
+    else if(hit.id==='instantWin'&&state&&state.phase==='walk'){state.distance=state.beautyDistance;state.phase='won';state.message=state.targetType==='beauty'?'追上她了！牵手成功':'追上'+E.frogs[state.frogId].name+'了！牵手成功';saveWin();if(state.targetType==='beauty') beautyCollected=true; else if(!collection.includes(state.frogId)) collection.push(state.frogId);}
     else if(hit.id==='sidebar') {
       if(native && typeof tt.navigateToScene==='function') {
         try { tt.navigateToScene({scene:'sidebar'}); } catch (_) {}
