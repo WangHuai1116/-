@@ -215,7 +215,7 @@
         }
         if(miniKey==='protein'){
           // Gold Standard 乳清蛋白粉桶：黑色桶身、金色 WHEY 标识、红色下标签。
-          const sip=(Math.sin(anim*3.2)+1)/2;c.save();c.translate(22-sip*4,-24-sip*8);c.rotate(-0.15-sip*0.45);c.scale(0.72,0.72);
+          const sip=(Math.sin(anim*3.2)+1)/2;c.save();c.translate(27-sip*11,25-sip*57);c.rotate(-0.15-sip*0.45);c.scale(0.52,0.52);
           c.fillStyle='#14181b';c.beginPath();c.ellipse(0,-25,12,4,0,0,Math.PI*2);c.fill();
           box(-11,-24,22,28,'#171b1e',5);c.fillStyle='#20262b';c.beginPath();c.ellipse(0,-24,11,3,0,0,Math.PI*2);c.fill();
           c.fillStyle='#c99a52';c.font='bold 4px sans-serif';c.textAlign='center';c.fillText('GOLD',0,-13);c.font='bold 8px sans-serif';c.fillText('WHEY',0,-4);
