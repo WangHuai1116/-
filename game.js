@@ -71,10 +71,10 @@
     if(!native) return;
     try {
       const type=kind==='error'?'heavy':'light';
-      if(typeof tt.vibrateShort==='function') {
+      if(typeof tt.vibrateLong==='function') {
+        try { tt.vibrateLong({duration:kind==='error'?180:70}); } catch (_) { try { tt.vibrateLong(); } catch (_) {} }
+      } else if(typeof tt.vibrateShort==='function') {
         try { tt.vibrateShort({type}); } catch (_) { try { tt.vibrateShort(); } catch (_) {} }
-      } else if(typeof tt.vibrateLong==='function') {
-        tt.vibrateLong({duration:kind==='error'?220:70});
       }
     } catch (_) {}
   }
@@ -198,7 +198,7 @@
         line(-35,barY,35,barY,'#59636d',4); line(-31,barY-7,-31,barY+7,'#59636d',3); line(31,barY-7,31,barY+7,'#59636d',3);
         circle(-35,barY,7,'#59636d'); circle(35,barY,7,'#59636d');
       } else {
-        body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs'||miniKey==='water')?miniKey:null);
+        body(0,0,'thin',0.8,null,true,false,(miniKey==='arms'||miniKey==='legs'||miniKey==='water'||miniKey==='protein')?miniKey:null);
         if(miniKey==='arms') {
           const curl=(Math.sin(anim*4)+1)/2;
           const ly=12-curl*9, ry=12-(1-curl)*9;
@@ -215,7 +215,7 @@
         }
         if(miniKey==='protein'){
           // Gold Standard 乳清蛋白粉桶：黑色桶身、金色 WHEY 标识、红色下标签。
-          c.save();c.translate(28,-13);
+          const sip=(Math.sin(anim*3.2)+1)/2;c.save();c.translate(22-sip*4,-24-sip*8);c.rotate(-0.15-sip*0.45);c.scale(0.72,0.72);
           c.fillStyle='#14181b';c.beginPath();c.ellipse(0,-25,12,4,0,0,Math.PI*2);c.fill();
           box(-11,-24,22,28,'#171b1e',5);c.fillStyle='#20262b';c.beginPath();c.ellipse(0,-24,11,3,0,0,Math.PI*2);c.fill();
           c.fillStyle='#c99a52';c.font='bold 4px sans-serif';c.textAlign='center';c.fillText('GOLD',0,-13);c.font='bold 8px sans-serif';c.fillText('WHEY',0,-4);
