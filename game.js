@@ -213,7 +213,15 @@
           box(-8,-2,16,13,'#168b5d',2);line(-5,2,5,2,'#53c88b',1);text('怡宝',0,7,5,'#fff','center');
           line(-5,-13,4,-13,'#8bd7ee',2);line(5,-12,6,12,'#b9edf5',2);c.restore();
         }
-        if(miniKey==='protein'){box(20,-20,14,20,'#f1c36e',4);line(20,-20,34,-20,'#fff',2);}
+        if(miniKey==='protein'){
+          // Gold Standard 乳清蛋白粉桶：黑色桶身、金色 WHEY 标识、红色下标签。
+          c.save();c.translate(28,-13);
+          c.fillStyle='#14181b';c.beginPath();c.ellipse(0,-25,12,4,0,0,Math.PI*2);c.fill();
+          box(-11,-24,22,28,'#171b1e',5);c.fillStyle='#20262b';c.beginPath();c.ellipse(0,-24,11,3,0,0,Math.PI*2);c.fill();
+          c.fillStyle='#c99a52';c.font='bold 4px sans-serif';c.textAlign='center';c.fillText('GOLD',0,-13);c.font='bold 8px sans-serif';c.fillText('WHEY',0,-4);
+          box(-11,3,22,9,'#d51f2d',2);c.fillStyle='#fff';c.font='bold 3px sans-serif';c.fillText('24g  5.5g',0,9);
+          c.restore();
+        }
       }
     }
     c.restore();
